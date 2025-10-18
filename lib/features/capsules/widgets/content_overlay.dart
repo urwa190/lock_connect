@@ -1,0 +1,166 @@
+// lib/features/capsules/widgets/content_overlay.dart
+
+import 'package:flutter/material.dart';
+import 'dart:ui';
+import 'package:lock_connect/core/constants/colors.dart';
+
+class ContentOverlay extends StatelessWidget {
+  final String title;
+  final bool isLocked;
+
+  const ContentOverlay({
+    super.key,
+    required this.title,
+    required this.isLocked,
+  });
+
+  // --- Helper function to build a single Avatar (FULLY OPAQUE) ---
+  Widget _buildAvatar(int index) {
+    const List<Color> avatarColors = [
+      Color(0xFFE57373),
+      Color(0xFF64B5F6),
+      Color(0xFFFFB74D)
+    ];
+    Color avatarColor = avatarColors[index % avatarColors.length];
+
+    return Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: Colors.white, width: 2),
+      ),
+      child: CircleAvatar(
+        radius: 11,
+        backgroundColor: avatarColor, // Fully opaque color
+        child: const Text('C', style: TextStyle(fontSize: 10, color: Colors.white)),
+      ),
+    );
+  }
+
+  // --- HELPER FUNCTION: Builds the Correctly Stacked Avatar Stack (FIXED) ---
+  Widget _buildAvatarStack() {
+    const double avatarRadius = 12;
+    const double overlapPixels = 8;
+    const int maxVisible = 3;
+    const int totalCollaborators = 5;
+    final int visibleAvatars = totalCollaborators > maxVisible ? maxVisible : totalCollaborators;
+    final int remaining = totalCollaborators - maxVisible;
+
+    List<Widget> avatarLayers = [];
+
+    // Avatars are positioned from LEFT to RIGHT (i=0, 1, 2)
+    for (int i = 0; i < visibleAvatars; i++) {
+      avatarLayers.add(
+          Positioned(
+            // Position each avatar slightly offset to the right
+            left: i * (2 * avatarRadius - overlapPixels),
+            child: _buildAvatar(i),
+          )
+      );
+    }
+
+    // Add the "+X" counter circle at the end of the stack
+    if (remaining > 0) {
+      avatarLayers.add(
+        Positioned(
+          // Position the counter right after the last visible avatar
+          left: visibleAvatars * (2 * avatarRadius - overlapPixels),
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.white, width: 2),
+              color: kInactiveColor,
+            ),
+            child: CircleAvatar(
+              radius: 10,
+              backgroundColor: kInactiveColor,
+              child: Text('+${remaining}', style: const TextStyle(fontSize: 10, color: Colors.white, fontWeight: FontWeight.bold)),
+            ),
+          ),
+        ),
+      );
+    }
+
+    // Calculate the width the Stack needs
+    double stackWidth = (visibleAvatars * 2 * avatarRadius) - ((visibleAvatars - 1) * overlapPixels) + (remaining > 0 ? (2 * avatarRadius - overlapPixels) : 0);
+
+    return SizedBox(
+      width: stackWidth,
+      height: 26,
+      child: Stack(
+        // Do not reverse the list; Stack renders items in order, which is correct here
+        children: avatarLayers,
+      ),
+    );
+  }
+
+  // --- Reworked Inner Content (Uses the fixed Stack helper) ---
+  Widget _buildInnerContent(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // 1. TITLE (PERFECTLY CENTERED VERTICALLY) - Remains the same
+          Expanded(
+            child: Center(
+              child: Text(
+                title,
+                style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w900,
+                  fontSize: 20,
+                ),
+                textAlign: TextAlign.center,
+                maxLines: 4,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ),
+
+          // 2. COLLABORATORS LIST (FINAL ALIGNMENT FIX)
+          Row(
+            // Use MainAxisAlignment.end to push the entire group to the right
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              // 1. COLLABORATORS TEXT (Now right behind the stack)
+              const Text('Collaborators:', style: TextStyle(color: Colors.white70, fontSize: 13)),
+              const SizedBox(width: 5), // Small space between text and first avatar
+
+              // 2. THE STACK OF OVERLAPPING AVATARS
+              _buildAvatarStack(),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double blurIntensity = isLocked ? 5.0 : 0.0;
+    Color surfaceColor = isLocked ? Colors.white.withOpacity(0.25) : Colors.black.withOpacity(0.05);
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12.0),
+      child: Container(
+        color: surfaceColor,
+        child: isLocked && blurIntensity > 0
+            ? Stack(
+          children: [
+            _buildInnerContent(context),
+            Positioned.fill(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: blurIntensity, sigmaY: blurIntensity),
+                child: Container(
+                  color: Colors.white.withOpacity(0.05),
+                ),
+              ),
+            ),
+          ],
+        )
+            : _buildInnerContent(context),
+      ),
+    );
+  }
+}
