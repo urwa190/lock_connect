@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_colors.dart'; // Gradient colors
 import 'threads_screen.dart';     // Navigation target
-import '../widgets/home_header.dart'; // Header with Rekindle and bell icon
 import 'notifications_screen.dart';   // For notification navigation
 
 class ThreadCreationScreen extends StatefulWidget {
@@ -24,14 +23,14 @@ class _ThreadCreationScreenState extends State<ThreadCreationScreen> {
     final threadText = _threadController.text.trim();
     if (threadText.isNotEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("New thread posted")), // ✅ Updated message
+        const SnackBar(content: Text("New thread posted",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+          backgroundColor: AppColors.sunsetPurple,
+          duration: const Duration(seconds: 2),
+          behavior: SnackBarBehavior.floating),
       );
       _threadController.clear();
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const ThreadsScreen()),
-      );
     }
   }
 
@@ -56,22 +55,30 @@ class _ThreadCreationScreenState extends State<ThreadCreationScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              HomeHeader(
-                userName: "Rekindle",
-                onNotificationTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const NotificationsScreen(userName: 'Sarah'),
-                    ),
-                  );
-                },
+              AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                title:const Text( "Thread Creation",
+                  style: TextStyle(fontFamily: 'PlayfairDisplay',color:AppColors.goldText,fontSize: 24, fontWeight: FontWeight.bold ),
+                ), actions: [
+                IconButton(
+                  icon: const Icon(Icons.notifications, color: Colors.white),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const NotificationsScreen(userName: 'Sarah'),
+                      ),
+                    );
+                  },
+                ),
+              ],
               ),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Text(
-                  "Create a Thread",
-                  style: TextStyle(
+                  "What's on your mind today?",
+                  style: TextStyle(fontFamily: 'Roboto',
                     color: Colors.white,
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
@@ -113,7 +120,9 @@ class _ThreadCreationScreenState extends State<ThreadCreationScreen> {
                             padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
                           ),
                           onPressed: _submitThread,
-                          child: const Text("Post Thread"),
+                          child: const Text("Post Thread",
+                          style: TextStyle(fontFamily: 'PlayfairDisplay'),
+                          ),
                         ),
                       ],
                     ),

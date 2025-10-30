@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lock_connect/theme/app_colors.dart';
-import '../widgets/home_header.dart';
 import '../widgets/post_card.dart';
 import '../models/post_model.dart';
 import 'notifications_screen.dart';
@@ -98,7 +97,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   onTap: () {
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Posted to $collection")),
+                      SnackBar(content: Text("Posted to $collection",
+                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                        backgroundColor: AppColors.sunsetPurple,
+                        duration: const Duration(seconds: 2),
+                        behavior: SnackBarBehavior.floating,),
                     );
                   },
                 );
@@ -115,28 +119,26 @@ class _HomeScreenState extends State<HomeScreen> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          HomeHeader(
-            userName: "Rekindle",
-            onNotificationTap: () {
+         AppBar(
+          backgroundColor: Colors.transparent,
+            elevation: 0,
+            title:const Text( "Rekindl",
+            style: TextStyle(fontFamily: 'PlayfairDisplay', color:AppColors.goldText,fontSize: 24, fontWeight: FontWeight.bold ),
+            ), actions: [
+      IconButton(
+      icon: const Icon(Icons.notifications, color: Colors.white),
+    onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => NotificationsScreen(userName: 'Sarah'),
+                  builder: (context) => const NotificationsScreen(userName: 'Sarah'),
                 ),
               );
             },
           ),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Text(
-              "Home Feed",
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
+    ],
+    ),
+
           Expanded(
             child: ListView.builder(
               itemCount: posts.length,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../widgets/home_header.dart';     // top row with username and bell icon
 import '../widgets/post_card.dart';      // reusable post layout
 import '../models/post_model.dart';      // mockPosts and PostModel
 import '../theme/app_colors.dart';       // color definitions
@@ -31,28 +30,26 @@ class ThreadsScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              HomeHeader(
-                userName: "Rekindle", // ✅ Gold-styled in HomeHeader widget
-                onNotificationTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const NotificationsScreen(userName: 'Sarah'),
-                    ),
-                  );
-                },
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Text(
-                  "Your Threads",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                  ),
+              AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                title:const Text( "Threads",
+                  style: TextStyle(fontFamily:'PlayfairDisplay', color:AppColors.goldText,fontSize: 24, fontWeight: FontWeight.bold ),
+                ), actions: [
+                IconButton(
+                  icon: const Icon(Icons.notifications, color: Colors.white),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const NotificationsScreen(userName: 'Sarah'),
+                      ),
+                    );
+                  },
                 ),
+              ],
               ),
+
               Expanded(
                 child: ListView.builder(
                   itemCount: threadPosts.length,

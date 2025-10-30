@@ -107,7 +107,7 @@ class _PostCardState extends State<PostCard> {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       elevation: 6,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      color: Colors.black, // consistent purple background
+      color: Colors.black.withOpacity(0.6), // consistent purple background
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

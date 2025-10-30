@@ -20,6 +20,22 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+
   assets:
-    - assets/images/
+    - assets/images/  # <-- Registering the IMAGES folder
     - assets/videos/
+
+
+  fonts:
+   - family: PlayfairDisplay
+     fonts:
+      - asset: assets/fonts/PlayfairDisplay-Italic-VariableFont_wght.ttf
+      - asset: assets/fonts/PlayfairDisplay-VariableFont_wght.ttf
+   - family: Roboto
+     fonts:
+      - asset: assets/fonts/Roboto-Bold.ttf
+      - asset: assets/fonts/Roboto-Italic.ttf
+      - asset: assets/fonts/Roboto-Regular.ttf
+
+
