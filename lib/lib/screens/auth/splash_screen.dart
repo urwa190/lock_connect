@@ -15,7 +15,7 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
 
     // Duration for splash screen
-    Future.delayed(const Duration(seconds: 3, milliseconds: 2350), () {
+    Future.delayed(const Duration(seconds: 3, milliseconds: 1600), () {
       if (mounted) {
         Navigator.pushReplacement(
           context,

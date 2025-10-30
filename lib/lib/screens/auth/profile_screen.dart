@@ -72,10 +72,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Stack(
                       alignment: Alignment.bottomRight,
                       children: [
-                        const CircleAvatar(
+                        CircleAvatar(
                           radius: 50,
-                          backgroundColor: Colors.white24,
-                          child: Icon(Icons.person, color: Colors.white, size: 65),
+                          backgroundColor: Colors.blueAccent,
+                          child: const Text(
+                            'J',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 40,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'PlayfairDisplay',
+                            ),
+                          ),
                         ),
                         Container(
                           padding: const EdgeInsets.all(5),

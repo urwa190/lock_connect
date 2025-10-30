@@ -138,10 +138,18 @@ class _FriendsScreenState extends State<FriendsScreen> {
                           icon: const Icon(Icons.delete, color: Colors.redAccent),
                         ),
 
-                        const CircleAvatar(
+                        CircleAvatar(
                           radius: 25,
-                          backgroundColor: Colors.white24,
-                          child: Icon(Icons.person, color: Colors.white, size: 30),
+                          backgroundColor: Colors.green,
+                          child: Text(
+                            friend['name'][0].toUpperCase(), // first initial
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'PlayfairDisplay',
+                            ),
+                          ),
                         ),
                         const SizedBox(width: 12),
 

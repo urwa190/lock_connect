@@ -65,10 +65,18 @@ class _FriendProfileScreenState extends State<FriendProfileScreen> {
               children: [
                 const SizedBox(height: 30),
                 //Centered DP
-                const CircleAvatar(
+                CircleAvatar(
                   radius: 50,
-                  backgroundColor: Colors.white24,
-                  child: Icon(Icons.person, color: Colors.white, size: 60),
+                  backgroundColor: Colors.lightGreen,
+                  child: Text(
+                    widget.name[0].toUpperCase(),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 40,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'PlayfairDisplay',
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 20),
                 // 🔹 Name
@@ -95,13 +103,22 @@ class _FriendProfileScreenState extends State<FriendProfileScreen> {
                 ),
                 const SizedBox(height: 25),
                 //Stats Row
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _ProfileStat(label: 'Threads', value: widget.threads.toString()),
-                    _ProfileStat(label: 'Capsules', value: widget.capsules.toString()),
-                    _ProfileStat(label: 'Friends', value: widget.friendsCount.toString()),
-                  ],
+                // Stats Row Wrapped in Styled Container
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.white24, width: 1),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _ProfileStat(label: 'Threads', value: widget.threads.toString()),
+                      _ProfileStat(label: 'Capsules', value: widget.capsules.toString()),
+                      _ProfileStat(label: 'Friends', value: widget.friendsCount.toString()),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 25),
 
@@ -134,7 +151,7 @@ class _FriendProfileScreenState extends State<FriendProfileScreen> {
     );
   }
 
-  // --- NEW: Helper for the single Collections heading ---
+  //
   Widget _buildCollectionHeading() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
@@ -149,7 +166,7 @@ class _FriendProfileScreenState extends State<FriendProfileScreen> {
           Icon(Icons.collections, color: AppColors.goldText, size: 18), // Selected icon color
           SizedBox(width: 5),
           Text(
-            'Collections', // The desired heading text
+            'Collections',
             style: TextStyle(
               color: AppColors.goldText, // Selected text color
               fontWeight: FontWeight.bold,
