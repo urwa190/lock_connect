@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../features/capsules/screens/capsule_home_screen.dart';
 import '../../theme/app_colors.dart';
 import 'profile_screen.dart';
 
@@ -24,16 +25,8 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     ),
-    const Center(
-      child: Text(
-        'Capsules Screen',
-        style: TextStyle(
-          color: AppColors.goldText,
-          fontSize: 24,
-          fontFamily: 'PlayfairDisplay',
-        ),
-      ),
-    ),
+    const CapsuleHomeScreen(),
+
     const Center(
       child: Text(
         'Create Something New!',
@@ -54,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     ),
-    const ProfileScreen(), // 🟢 last one for Profile
+    const ProfileScreen(), //last one for Profile
   ];
 
   void _onItemTapped(int index) {
