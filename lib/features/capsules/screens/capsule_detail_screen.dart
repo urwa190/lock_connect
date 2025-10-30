@@ -1,7 +1,6 @@
-// lib/features/capsules/screens/capsule_detail_screen.dart
-
 import 'package:flutter/material.dart';
 import 'package:lock_connect/core/constants/colors.dart';
+import 'package:lock_connect/core/constants/app_colors.dart'; // Import AppColors for gradient/gold
 
 // --- DARK MODE OVERRIDES (Ensure consistency) ---
 const Color kAppBackground = Color(0xFF121212);
@@ -35,7 +34,7 @@ class CapsuleDetailScreen extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: kDarkCardBackground,
+        color: kDarkCardBackground.withOpacity(0.60), // Use opacity for cards
         borderRadius: BorderRadius.circular(12),
       ),
       child: child,
@@ -57,8 +56,9 @@ class CapsuleDetailScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(isVideo ? Icons.videocam : Icons.photo, size: 80, color: kInactiveColor), // Larger icon for full screen
-            Text(isVideo ? 'Video Clip' : 'High-Res Photo', style: TextStyle(color: kInactiveColor, fontSize: 16)),
+            // FONT: Roboto
+            Icon(isVideo ? Icons.videocam : Icons.photo, size: 80, color: kInactiveColor),
+            Text(isVideo ? 'Video Clip' : 'High-Res Photo', style: const TextStyle(color: kInactiveColor, fontSize: 16, fontFamily: 'Roboto')),
           ],
         ),
       ),
@@ -68,70 +68,141 @@ class CapsuleDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: kAppBackground,
-      appBar: AppBar(
-        backgroundColor: kAppBackground,
-        foregroundColor: kAppBarForeground,
-        elevation: 0,
-        title: Text(capsuleTitle, style: TextStyle(color: kAppBarForeground)),
-        actions: [
-          IconButton(icon: const Icon(Icons.share_outlined, color: kAppBarForeground), onPressed: () {}),
-        ],
+    // --- WRAP THE ENTIRE SCREEN IN THE GRADIENT CONTAINER ---
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            AppColors.sunsetBlue,
+            AppColors.sunsetPurple,
+            AppColors.sunsetPink,
+            AppColors.sunsetOrange,
+          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // --- 1. HORIZONTAL MEDIA GALLERY (Instagram-style scroll) ---
-          SizedBox(
-            height: 350, // Large, fixed height for media viewing
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: mockMediaUrls.length,
-              itemBuilder: (context, index) => _buildMediaItem(context, index), // Call helper
+      child: Scaffold(
+        backgroundColor: Colors.transparent, // Scaffold transparent
+        appBar: AppBar(
+          backgroundColor: Colors.transparent, // AppBar transparent
+          foregroundColor: kAppBarForeground,
+          elevation: 0,
+          iconTheme: const IconThemeData(color: AppColors.goldText),
+
+          title: Text(
+            capsuleTitle,
+            // --- APPLIED CAPSULE HOME SCREEN TITLE STYLING ---
+            style: Theme.of(context).textTheme.titleLarge!.copyWith(
+              fontWeight: FontWeight.bold,
+              fontFamily: 'PlayfairDisplay',
+              color: AppColors.goldText, // Gold for branding
+              letterSpacing: 1,
+              fontSize: 20, // Matches Capsule Home Screen
+
             ),
           ),
 
-          // --- 2. Scrollable Detail Content (Needs Expanded) ---
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // --- Info & Dates ---
-                  _buildInfoCard(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          const Text('Created On', style: TextStyle(color: Colors.white70, fontSize: 13)),
-                          Text(creationDate, style: const TextStyle(color: kAppBarForeground, fontWeight: FontWeight.bold)),
-                        ]),
-                        Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                          const Text('Unlocked On', style: TextStyle(color: Colors.white70, fontSize: 13)),
-                          Text(unlocksIn, style: const TextStyle(color: kPrimaryAccentColor, fontWeight: FontWeight.bold)),
-                        ]),
-                      ],
-                    ),
-                  ),
-
-                  // --- Display Tiny NOTES (The caption) ---
-                  Text('Note:', style: Theme.of(context).textTheme.titleMedium!.copyWith(color: kAppBarForeground, fontWeight: FontWeight.bold)),
-                  _buildInfoCard(
-                    child: Text(mockNotes, style: const TextStyle(color: kAppBarForeground, height: 1.5)),
-                  ),
-                  const SizedBox(height: 10),
-
-                  // --- Collaborators Section ---
-                  Text('Collaborators', style: Theme.of(context).textTheme.titleLarge!.copyWith(color: kAppBarForeground, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 10),
-                  _buildMockCollaboratorList(),
-                ],
+          // actions: [
+          //   IconButton(icon: const Icon(Icons.share_outlined, color: kAppBarForeground), onPressed: () {}),
+          // ],
+        ),
+        // appBar: AppBar(
+        //   backgroundColor: Colors.transparent, // AppBar transparent
+        //   foregroundColor: kAppBarForeground,
+        //   elevation: 0,
+        //   title: Text(
+        //     capsuleTitle,
+        //     // --- APPLIED CAPSULE HOME SCREEN TITLE STYLING ---
+        //     style: Theme.of(context).textTheme.titleLarge!.copyWith(
+        //       fontWeight: FontWeight.bold,
+        //       fontFamily: 'PlayfairDisplay',
+        //       color: AppColors.goldText, // Gold for branding
+        //       letterSpacing: 1,
+        //       fontSize: 24,
+        //     ),
+        //     // --- MODIFIED LINES FOR WRAPPING ---
+        //     maxLines: 2,
+        //     overflow: TextOverflow.ellipsis,
+        //   ),
+        //   actions: [
+        //     IconButton(icon: const Icon(Icons.share_outlined, color: kAppBarForeground), onPressed: () {}),
+        //   ],
+        // ),
+        body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // --- 1. HORIZONTAL MEDIA GALLERY (Instagram-style scroll) ---
+            SizedBox(
+              height: 350, // Large, fixed height for media viewing
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: mockMediaUrls.length,
+                itemBuilder: (context, index) => _buildMediaItem(context, index), // Call helper
               ),
             ),
-          ),
-        ],
+
+            // --- 2. Scrollable Detail Content ---
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // --- Info & Dates ---
+                    _buildInfoCard(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                            const Text('Created On', style: TextStyle(color: Colors.white70, fontSize: 13, fontFamily: 'Roboto')), // FONT: Roboto
+                            Text(creationDate, style: const TextStyle(color: kAppBarForeground, fontWeight: FontWeight.bold, fontFamily: 'Roboto')), // FONT: Roboto
+                          ]),
+                          Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+                            const Text('Unlocked On', style: TextStyle(color: Colors.white70, fontSize: 13, fontFamily: 'Roboto')), // FONT: Roboto
+                            Text(unlocksIn, style: const TextStyle(color: kPrimaryAccentColor, fontWeight: FontWeight.bold, fontFamily: 'Roboto')), // FONT: Roboto
+                          ]),
+                        ],
+                      ),
+                    ),
+
+                    // --- Display Tiny NOTES (The caption) ---
+                    Text(
+                        'Note:',
+                        style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                            color: kAppBarForeground,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Roboto' // FONT: Roboto
+                        )
+                    ),
+                    _buildInfoCard(
+                      child: Text(mockNotes, style: const TextStyle(color: kAppBarForeground, height: 1.5, fontFamily: 'Roboto')), // FONT: Roboto
+                    ),
+                    const SizedBox(height: 10),
+
+                    // --- Collaborators Section ---
+                    Text(
+                        'Collaborators:',
+                        // style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                        //     color: kAppBarForeground,
+                        //     fontWeight: FontWeight.bold,
+                        //     fontFamily: 'Roboto' // FONT: Roboto
+                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'PlayfairDisplay',
+                          color: AppColors.goldText, // Gold for branding
+                          letterSpacing: 1,
+                          fontSize: 18,
+                        )
+                    ),
+                    const SizedBox(height: 10),
+                    _buildMockCollaboratorList(),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -155,10 +226,10 @@ class CapsuleDetailScreen extends StatelessWidget {
             CircleAvatar(
               backgroundColor: kPrimaryAccentColor,
               radius: 18,
-              child: Text(name[0], style: TextStyle(color: Colors.black)),
+              child: Text(name[0], style: const TextStyle(color: Colors.black, fontFamily: 'Roboto')), // FONT: Roboto
             ),
             const SizedBox(width: 10),
-            Text(name, style: TextStyle(color: kAppBarForeground, fontSize: 16)),
+            Text(name, style: const TextStyle(color: kAppBarForeground, fontSize: 16, fontFamily: 'Roboto')), // FONT: Roboto
           ],
         )
     );

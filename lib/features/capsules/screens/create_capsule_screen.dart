@@ -1,221 +1,345 @@
-// // lib/features/capsules/screens/create_capsule_screen.dart
-//
 // import 'package:flutter/material.dart';
-// // FIX: Import the colors file to resolve "Undefined name" errors
 // import 'package:lock_connect/core/constants/colors.dart';
+// import 'package:lock_connect/core/constants/app_colors.dart';
+// import 'add_collaborators_screen.dart'; // Import Screen 15
 //
-// class CreateCapsuleScreen extends StatelessWidget {
+// // --- DARK MODE CONSTANTS ---
+// const Color kAppBarForeground = Colors.white;
+// const Color kDarkCardBackground = Color(0xFF1E1E1E);
+//
+// class CreateCapsuleScreen extends StatefulWidget { // <--- CONVERTED TO STATEFUL
 //   const CreateCapsuleScreen({super.key});
 //
 //   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Create New Capsule'),
-//       ),
-//       body: SingleChildScrollView(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             _buildTitleSection(context),
-//             const SizedBox(height: 16),
-//             _buildCollaboratorsSection(context),
-//             const SizedBox(height: 16),
-//             _buildUnlockDateSection(context),
-//             const SizedBox(height: 16),
-//             _buildContentSection(context),
-//             const SizedBox(height: 40),
-//           ],
-//         ),
-//       ),
-//       bottomNavigationBar: _buildNextStepButton(context),
+//   State<CreateCapsuleScreen> createState() => _CreateCapsuleScreenState();
+// }
+//
+// class _CreateCapsuleScreenState extends State<CreateCapsuleScreen> {
+//   // --- STATE VARIABLES ---
+//   DateTime? _selectedDate;
+//   TimeOfDay? _selectedTime;
+//
+//   // --- DATE/TIME PICKER LOGIC ---
+//   Future<void> _selectDate() async {
+//     final DateTime? pickedDate = await showDatePicker(
+//       context: context,
+//       initialDate: DateTime.now().add(const Duration(days: 1)),
+//       firstDate: DateTime.now().add(const Duration(days: 1)),
+//       lastDate: DateTime.now().add(const Duration(days: 365 * 10)),
+//       builder: (context, child) {
+//         return Theme(
+//           data: ThemeData.dark().copyWith(
+//             colorScheme: ColorScheme.dark(
+//               primary: AppColors.sunsetOrange,
+//               onPrimary: Colors.white,
+//               surface: kDarkCardBackground,
+//               onSurface: Colors.white,
+//             ),
+//             dialogBackgroundColor: kDarkCardBackground,
+//           ),
+//           child: child!,
+//         );
+//       },
 //     );
+//
+//     if (pickedDate != null) {
+//       setState(() {
+//         _selectedDate = pickedDate;
+//       });
+//       // Automatically prompt for time after date is set
+//       _selectTime();
+//     }
 //   }
 //
-//   // Helper for creating the structured dark card container
+//   Future<void> _selectTime() async {
+//     final TimeOfDay? pickedTime = await showTimePicker(
+//       context: context,
+//       initialTime: TimeOfDay.now(),
+//       builder: (context, child) {
+//         return Theme(
+//           data: ThemeData.dark().copyWith(
+//             colorScheme: ColorScheme.dark(
+//               primary: AppColors.sunsetOrange,
+//               onPrimary: Colors.white,
+//               surface: kDarkCardBackground,
+//               onSurface: Colors.white,
+//             ),
+//             dialogBackgroundColor: kDarkCardBackground,
+//           ),
+//           child: child!,
+//         );
+//       },
+//     );
+//
+//     if (pickedTime != null) {
+//       setState(() {
+//         _selectedTime = pickedTime;
+//       });
+//     }
+//   }
+//
+//
+//   // Helper for structured, dark card container used for form sections
 //   Widget _buildCardContainer({required Widget child, EdgeInsets? padding}) {
 //     return Container(
 //       width: double.infinity,
 //       padding: padding ?? const EdgeInsets.all(16.0),
 //       decoration: BoxDecoration(
-//         color: kCardColor, // Uses kCardColor (now white/light)
+//         color: kDarkCardBackground.withOpacity(0.60),
 //         borderRadius: BorderRadius.circular(16.0),
 //       ),
 //       child: child,
 //     );
 //   }
 //
-//   // --- All helper methods are included below for completeness ---
-//
-//   // --- 1. Title Section ---
-//   Widget _buildTitleSection(BuildContext context) {
-//     return _buildCardContainer(
-//       child: Column(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//           Row(
-//             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//             children: [
-//               Text(
-//                 'Title',
-//                 style: Theme.of(context).textTheme.titleSmall!.copyWith(color: kDarkTextColor),
+//   // Helper for the ORANGE accent button at the bottom
+//   Widget _buildNextStepButton() {
+//     return SizedBox(
+//       width: double.infinity,
+//       child: ElevatedButton(
+//         onPressed: () {
+//           // 1. Show the SnackBar
+//           ScaffoldMessenger.of(context).showSnackBar(
+//             SnackBar(
+//               content: const Text(
+//                 'New capsule created!',
+//                 style: TextStyle(fontFamily: 'Roboto', color: Colors.white, fontWeight: FontWeight.bold),
 //               ),
-//               const Icon(Icons.lock_rounded, size: 20, color: kInactiveColor),
-//             ],
+//               backgroundColor: AppColors.sunsetPurple,
+//               duration: const Duration(seconds: 2),
+//               behavior: SnackBarBehavior.floating,
+//             ),
+//           );
+//           // TODO: Add navigation/form logic here
+//         },
+//         style: ElevatedButton.styleFrom(
+//           padding: const EdgeInsets.symmetric(vertical: 16),
+//           backgroundColor: AppColors.sunsetOrange,
+//           shape: RoundedRectangleBorder(
+//             borderRadius: BorderRadius.circular(30),
 //           ),
-//           const SizedBox(height: 8),
-//           // Placeholder for the input field
-//           Text('Trip to Kyoto Memories', style: TextStyle(fontSize: 18, color: kDarkTextColor, fontWeight: FontWeight.w500)),
-//         ],
-//       ),
-//     );
-//   }
-//
-//   // --- 2. Collaborators Section ---
-//   Widget _buildCollaboratorsSection(BuildContext context) {
-//     return _buildCardContainer(
-//       child: Column(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//           Text(
-//             'Collaborators',
-//             style: Theme.of(context).textTheme.titleSmall!.copyWith(color: kDarkTextColor),
-//           ),
-//           const SizedBox(height: 12),
-//           // Placeholder Row for collaborator profile pictures
-//           Row(
-//             children: [
-//               const CircleAvatar(radius: 18, backgroundColor: kInactiveColor),
-//               const SizedBox(width: 8),
-//               const CircleAvatar(radius: 18, backgroundColor: kInactiveColor),
-//               const SizedBox(width: 8),
-//               const CircleAvatar(radius: 18, backgroundColor: kInactiveColor),
-//               const SizedBox(width: 8),
-//               CircleAvatar(radius: 18, backgroundColor: kInactiveColor, child: Text('+3', style: TextStyle(color: kDarkTextColor))),
-//             ],
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-//
-//   // --- 3. Unlock Date Section ---
-//   Widget _buildUnlockDateSection(BuildContext context) {
-//     return _buildCardContainer(
-//       child: Column(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//           Text(
-//             'Unlock Date',
-//             style: Theme.of(context).textTheme.titleSmall!.copyWith(color: kDarkTextColor),
-//           ),
-//           const SizedBox(height: 8),
-//           Row(
-//             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//             children: [
-//               // Button to navigate to Collaborators Screen (Screen 15)
-//               TextButton.icon(
-//                 onPressed: () { /* TODO: Navigation to Add Collaborators Screen (15) */ },
-//                 icon: const Icon(Icons.person_add, color: kPrimaryAccentColor),
-//                 label: const Text('Add People', style: TextStyle(color: kPrimaryAccentColor)),
-//                 style: TextButton.styleFrom(padding: EdgeInsets.zero, alignment: Alignment.centerLeft),
-//               ),
-//               // Calendar Icon
-//               const Icon(Icons.calendar_month, color: kInactiveColor),
-//             ],
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-//
-//   // --- 4. Add Content Section ---
-//   Widget _buildContentSection(BuildContext context) {
-//     return _buildCardContainer(
-//       child: Column(
-//         crossAxisAlignment: CrossAxisAlignment.start,
-//         children: [
-//           Text(
-//             'Add Content',
-//             style: Theme.of(context).textTheme.titleSmall!.copyWith(color: kDarkTextColor),
-//           ),
-//           const SizedBox(height: 12),
-//
-//           // Photos/Videos Button
-//           _buildContentButton(context, icon: Icons.photo_camera_rounded, label: 'Photos/Videos'),
-//           const SizedBox(height: 8),
-//
-//           // Voice Clips Button
-//           _buildContentButton(context, icon: Icons.mic_none_rounded, label: 'Voice Clips'),
-//           const SizedBox(height: 16),
-//
-//           // Placeholder for media previews
-//           Row(
-//             children: [
-//               _buildMediaPreview(),
-//               const SizedBox(width: 8),
-//               _buildMediaPreview(),
-//               const SizedBox(width: 8),
-//               _buildMediaPreview(),
-//             ],
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-//
-//   // Helper for the small media preview boxes
-//   Widget _buildMediaPreview() {
-//     return Container(
-//       height: 60,
-//       width: 60,
-//       decoration: BoxDecoration(color: kInactiveColor.withOpacity(0.3), borderRadius: BorderRadius.circular(8)),
-//     );
-//   }
-//
-//   // Helper for the content buttons (Photos/Videos, Voice Clips)
-//   Widget _buildContentButton(BuildContext context, {required IconData icon, required String label}) {
-//     return Row(
-//       children: [
-//         Icon(icon, color: kInactiveColor),
-//         const SizedBox(width: 8),
-//         Text(
-//           label,
-//           style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: kDarkTextColor),
+//           elevation: 8,
+//           shadowColor: AppColors.sunsetOrange.withOpacity(0.5),
 //         ),
-//       ],
+//         child: Text(
+//           'Seal Capsule',
+//           style: const TextStyle(
+//             color: Colors.white,
+//             fontSize: 18,
+//             fontWeight: FontWeight.bold,
+//             fontFamily: 'PlayfairDisplay',
+//           ),
+//         ),
+//       ),
 //     );
 //   }
 //
-//   // --- Bottom Button: Next Step (Gradient Look) ---
-//   Widget _buildNextStepButton(BuildContext context) {
-//     return Container(
-//       padding: const EdgeInsets.all(16.0),
-//       // FIX: The context is no longer required to be const here
-//       decoration: BoxDecoration(
-//         color: kLightBackgroundColor, // Use light background for the button area
-//       ),
+//   // Helper for media buttons
+//   Widget _buildMediaButton(IconData icon, String label) {
+//     return GestureDetector(
+//       onTap: () {
+//         ScaffoldMessenger.of(context).showSnackBar(
+//           SnackBar(
+//             content: const Text(
+//               'Gallery will be shown here',
+//               style: TextStyle(fontFamily: 'Roboto', color: Colors.white, fontWeight: FontWeight.bold),
+//             ),
+//             backgroundColor: AppColors.sunsetPurple,
+//             duration: const Duration(seconds: 2),
+//             behavior: SnackBarBehavior.floating,
+//           ),
+//         );
+//       },
 //       child: Container(
-//         height: 50,
+//         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
 //         decoration: BoxDecoration(
-//           borderRadius: BorderRadius.circular(30),
-//           gradient: const LinearGradient(
-//             colors: [Color(0xFFF3C759), Color(0xFFD4A73D)], // Gold/Yellow Tones
-//             begin: Alignment.centerLeft,
-//             end: Alignment.centerRight,
-//           ),
+//           color: const Color(0xFF303030),
+//           borderRadius: BorderRadius.circular(20),
 //         ),
-//         child: ElevatedButton(
-//           onPressed: () { /* TODO: Proceed to the next step of capsule creation */ },
-//           style: ElevatedButton.styleFrom(
-//             backgroundColor: Colors.transparent, // Transparent background for gradient show-through
-//             shadowColor: Colors.transparent,
-//             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+//         child: Row(
+//           children: [
+//             Icon(icon, color: AppColors.sunsetOrange, size: 20),
+//             const SizedBox(width: 8),
+//             // FONT: Roboto
+//             Text(label, style: TextStyle(color: AppColors.sunsetOrange, fontFamily: 'Roboto')),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     // Defines the style for the card titles/labels to maintain consistency
+//     final TextStyle cardTitleStyle = TextStyle(
+//       color: Colors.white, // White labels
+//       fontSize: 16,
+//       fontWeight: FontWeight.bold,
+//       fontFamily: 'Roboto',
+//     );
+//     // Defines the style for input text fields
+//     final TextStyle inputTextStyle = const TextStyle(color: kAppBarForeground, fontSize: 16, fontWeight: FontWeight.w500, fontFamily: 'Roboto');
+//     // Defines the style for hint text
+//     final TextStyle hintTextStyle = TextStyle(color: kInactiveColor.withOpacity(0.5), fontFamily: 'Roboto');
+//
+//
+//     return Container(
+//       decoration: const BoxDecoration(
+//         gradient: LinearGradient(
+//           colors: [
+//             AppColors.sunsetBlue,
+//             AppColors.sunsetPurple,
+//             AppColors.sunsetPink,
+//             AppColors.sunsetOrange,
+//           ],
+//           begin: Alignment.topCenter,
+//           end: Alignment.bottomCenter,
+//         ),
+//       ),
+//       child: Scaffold(
+//         backgroundColor: Colors.transparent,
+//         appBar: AppBar(
+//           backgroundColor: Colors.transparent,
+//           elevation: 0,
+//           foregroundColor: kAppBarForeground,
+//           title: Text(
+//             'Create Capsule',
+//             style: Theme.of(context).textTheme.titleLarge!.copyWith(
+//               fontWeight: FontWeight.bold,
+//               fontFamily: 'PlayfairDisplay',
+//               color: AppColors.goldText,
+//               letterSpacing: 1,
+//               fontSize: 22,
+//             ),
 //           ),
-//           child: const Text(
-//             'Next Step',
-//             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
+//           iconTheme: const IconThemeData(color: Colors.white),
+//         ),
+//         body: SingleChildScrollView(
+//           padding: const EdgeInsets.all(16.0),
+//           child: Column(
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: [
+//               // --- 1. TITLE SECTION (TextField) ---
+//               _buildCardContainer(
+//                 child: TextField(
+//                   decoration: InputDecoration(
+//                     labelText: 'Capsule Title',
+//                     labelStyle: cardTitleStyle,
+//                     hintText: 'e.g., Trip to Kyoto Memories',
+//                     hintStyle: hintTextStyle,
+//                     border: InputBorder.none,
+//                     suffixIcon: const Icon(Icons.lock_rounded, size: 20, color: Colors.white70),
+//                   ),
+//                   style: inputTextStyle,
+//                 ),
+//               ),
+//               const SizedBox(height: 16),
+//
+//               // --- 2. COLLABORATORS SECTION (Navigation to Screen 15) ---
+//               _buildCardContainer(
+//                 child: Column(
+//                   crossAxisAlignment: CrossAxisAlignment.start,
+//                   children: [
+//                     Text('Add Collaborators', style: cardTitleStyle),
+//                     const SizedBox(height: 12),
+//
+//                     Row(
+//                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                       children: [
+//                         // Placeholder Row for profile pictures
+//                         Row(
+//                           children: [
+//                             ...List.generate(3, (index) =>
+//                             const Padding(
+//                               padding: EdgeInsets.only(right: 8.0),
+//                               child: CircleAvatar(radius: 18, backgroundColor: Colors.white54),
+//                             )),
+//                             if (4 > 3) const Text('+1 more', style: TextStyle(color: Colors.white70, fontFamily: 'Roboto')),
+//                           ],
+//                         ),
+//
+//                         IconButton(
+//                           icon: Icon(Icons.arrow_forward_ios, color: AppColors.sunsetOrange, size: 16),
+//                           onPressed: () {
+//                             Navigator.push(context, MaterialPageRoute(builder: (context) => const AddCollaboratorsScreen()));
+//                           },
+//                         ),
+//                       ],
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//               const SizedBox(height: 16),
+//
+//               // --- 3. UNLOCK DATE SECTION (Date Picker Placeholder) ---
+//               _buildCardContainer(
+//                 child: Column(
+//                   crossAxisAlignment: CrossAxisAlignment.start,
+//                   children: [
+//                     Text('Set Unlock Time', style: cardTitleStyle),
+//                     const SizedBox(height: 8),
+//
+//                     TextButton.icon(
+//                       // --- CALL THE DATE PICKER METHOD ---
+//                       onPressed: _selectedDate == null ? _selectDate : null, // Disable if already picked, though time picker handles this
+//                       icon: Icon(Icons.calendar_month, color: AppColors.sunsetOrange),
+//                       label: Text(
+//                         // --- DISPLAY SELECTED DATE/TIME ---
+//                           _selectedDate == null || _selectedTime == null
+//                               ? 'Select Date and Time'
+//                               : '${_selectedDate!.month}/${_selectedDate!.day}/${_selectedDate!.year} ${_selectedTime!.format(context)}',
+//                           style: TextStyle(
+//                               color: AppColors.sunsetOrange,
+//                               fontSize: 16,
+//                               fontFamily: 'Roboto'
+//                           )
+//                       ),
+//                       style: TextButton.styleFrom(alignment: Alignment.centerLeft, padding: EdgeInsets.zero),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//               const SizedBox(height: 16),
+//
+//               // --- 4. ADD MEDIA/NOTES SECTION ---
+//               _buildCardContainer(
+//                 child: Column(
+//                   crossAxisAlignment: CrossAxisAlignment.start,
+//                   children: [
+//                     Text('Media & Note', style: cardTitleStyle),
+//                     const SizedBox(height: 12),
+//
+//                     // Text Note Input
+//                     TextField(
+//                       maxLines: 4,
+//                       decoration: InputDecoration(
+//                         hintText: 'Add a tiny note to rekinl your memories in the future...',
+//                         hintStyle: hintTextStyle,
+//                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+//                         filled: true,
+//                         fillColor: const Color(0xFF303030).withOpacity(0.60),
+//                       ),
+//                       style: inputTextStyle,
+//                     ),
+//                     const SizedBox(height: 12),
+//
+//                     // Media Buttons
+//                     Row(
+//                       children: [
+//                         _buildMediaButton(Icons.photo, 'Photos'),
+//                         const SizedBox(width: 10),
+//                         _buildMediaButton(Icons.videocam, 'Videos'),
+//                       ],
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//               const SizedBox(height: 40),
+//
+//               // --- 5. SEAL CAPSULE BUTTON ---
+//               _buildNextStepButton(),
+//               const SizedBox(height: 20),
+//             ],
 //           ),
 //         ),
 //       ),
@@ -223,19 +347,102 @@
 //   }
 // }
 
-// lib/features/capsules/screens/create_capsule_screen.dart
 
 import 'package:flutter/material.dart';
 import 'package:lock_connect/core/constants/colors.dart';
+import 'package:lock_connect/core/constants/app_colors.dart';
 import 'add_collaborators_screen.dart'; // Import Screen 15
 
-// --- DARK MODE OVERRIDES ---
-const Color kAppBackground = Color(0xFF121212);
+
+// --- DARK MODE CONSTANTS ---
 const Color kAppBarForeground = Colors.white;
 const Color kDarkCardBackground = Color(0xFF1E1E1E);
 
-class CreateCapsuleScreen extends StatelessWidget {
+class CreateCapsuleScreen extends StatefulWidget {
   const CreateCapsuleScreen({super.key});
+
+  @override
+  State<CreateCapsuleScreen> createState() => _CreateCapsuleScreenState();
+}
+
+class _CreateCapsuleScreenState extends State<CreateCapsuleScreen> {
+  // --- STATE VARIABLES ---
+  DateTime? _selectedDate;
+  TimeOfDay? _selectedTime;
+  List<String> _collaborators = []; // NEW: State to hold selected collaborator names
+
+  // --- DATE/TIME PICKER LOGIC ---
+  Future<void> _selectDate() async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now().add(const Duration(days: 1)),
+      firstDate: DateTime.now().add(const Duration(days: 1)),
+      lastDate: DateTime.now().add(const Duration(days: 365 * 10)),
+      builder: (context, child) {
+        return Theme(
+          data: ThemeData.dark().copyWith(
+            colorScheme: ColorScheme.dark(
+              primary: AppColors.sunsetOrange,
+              onPrimary: Colors.white,
+              surface: kDarkCardBackground,
+              onSurface: Colors.white,
+            ),
+            dialogBackgroundColor: kDarkCardBackground,
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (pickedDate != null) {
+      setState(() {
+        _selectedDate = pickedDate;
+      });
+      _selectTime();
+    }
+  }
+
+  Future<void> _selectTime() async {
+    final TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+      builder: (context, child) {
+        return Theme(
+          data: ThemeData.dark().copyWith(
+            colorScheme: ColorScheme.dark(
+              primary: AppColors.sunsetOrange,
+              onPrimary: Colors.white,
+              surface: kDarkCardBackground,
+              onSurface: Colors.white,
+            ),
+            dialogBackgroundColor: kDarkCardBackground,
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (pickedTime != null) {
+      setState(() {
+        _selectedTime = pickedTime;
+      });
+    }
+  }
+
+  // --- COLLABORATOR NAVIGATION LOGIC ---
+  void _navigateToAddCollaborators() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const AddCollaboratorsScreen()),
+    );
+
+    // Update state with the returned list of collaborators
+    if (result != null && result is List<String>) {
+      setState(() {
+        _collaborators = result;
+      });
+    }
+  }
 
   // Helper for structured, dark card container used for form sections
   Widget _buildCardContainer({required Widget child, EdgeInsets? padding}) {
@@ -243,39 +450,82 @@ class CreateCapsuleScreen extends StatelessWidget {
       width: double.infinity,
       padding: padding ?? const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: kDarkCardBackground,
+        color: kDarkCardBackground.withOpacity(0.60),
         borderRadius: BorderRadius.circular(16.0),
       ),
       child: child,
     );
   }
 
-  // Helper for the gold gradient button at the bottom
-  Widget _buildNextStepButton(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16.0),
-      decoration: const BoxDecoration(color: kAppBackground),
-      child: Container(
-        height: 50,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30),
-          gradient: const LinearGradient(
-            colors: [Color(0xFFF3C759), Color(0xFFD4A73D)], // Gold/Yellow Tones
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
+  // Helper for the ORANGE accent button at the bottom
+  Widget _buildNextStepButton() {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text(
+                'New capsule created!',
+                style: TextStyle(fontFamily: 'Roboto', color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+              backgroundColor: AppColors.sunsetPurple,
+              duration: const Duration(seconds: 2),
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        },
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          backgroundColor: AppColors.sunsetOrange,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          elevation: 8,
+          shadowColor: AppColors.sunsetOrange.withOpacity(0.5),
+        ),
+        child: Text(
+          'Seal Capsule',
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'PlayfairDisplay',
           ),
         ),
-        child: ElevatedButton(
-          onPressed: () { /* TODO: Finalize capsule creation */ },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.transparent,
-            shadowColor: Colors.transparent,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+      ),
+    );
+  }
+
+  // Helper for media buttons
+  Widget _buildMediaButton(IconData icon, String label) {
+    return GestureDetector(
+      onTap: () {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text(
+              'Gallery will be shown here',
+              style: TextStyle(fontFamily: 'Roboto', color: Colors.white, fontWeight: FontWeight.bold),
+            ),
+            backgroundColor: AppColors.sunsetPurple,
+            duration: const Duration(seconds: 2),
+            behavior: SnackBarBehavior.floating,
           ),
-          child: const Text(
-            'CREATE CAPSULE',
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
-          ),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: const Color(0xFF303030),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: AppColors.sunsetOrange, size: 20),
+            const SizedBox(width: 8),
+            // FONT: Roboto
+            Text(label, style: TextStyle(color: AppColors.sunsetOrange, fontFamily: 'Roboto')),
+          ],
         ),
       ),
     );
@@ -283,144 +533,187 @@ class CreateCapsuleScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: kAppBackground,
-      appBar: AppBar(
-        backgroundColor: kAppBackground,
-        foregroundColor: kAppBarForeground,
-        title: const Text('Create New Capsule'),
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // --- 1. TITLE SECTION (TextField) ---
-            _buildCardContainer(
-              child: TextField(
-                decoration: InputDecoration(
-                  labelText: 'Capsule Title',
-                  labelStyle: TextStyle(color: Colors.white70),
-                  hintText: 'e.g., Trip to Kyoto Memories',
-                  hintStyle: TextStyle(color: kInactiveColor.withOpacity(0.5)),
-                  border: InputBorder.none, // Clean look
-                  suffixIcon: const Icon(Icons.lock_rounded, size: 20, color: Colors.white70),
-                ),
-                style: const TextStyle(color: kAppBarForeground, fontSize: 18, fontWeight: FontWeight.w500),
-              ),
-            ),
-            const SizedBox(height: 16),
+    // Defines the style for the card titles/labels to maintain consistency
+    final TextStyle cardTitleStyle = TextStyle(
+      color: Colors.white, // White labels
+      fontSize: 16,
+      fontWeight: FontWeight.bold,
+      fontFamily: 'Roboto',
+    );
+    // Defines the style for input text fields
+    final TextStyle inputTextStyle = const TextStyle(color: kAppBarForeground, fontSize: 16, fontWeight: FontWeight.w500, fontFamily: 'Roboto');
+    // Defines the style for hint text
+    final TextStyle hintTextStyle = TextStyle(color: kInactiveColor.withOpacity(0.5), fontFamily: 'Roboto');
 
-            // --- 2. COLLABORATORS SECTION (Navigation to Screen 15) ---
-            _buildCardContainer(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Add Collaborators', style: TextStyle(color: Colors.white70, fontSize: 16)),
-                  const SizedBox(height: 12),
 
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      // Placeholder Row for profile pictures
-                      Row(
-                        children: [
-                          ...List.generate(3, (index) =>
-                          const Padding(
-                            padding: EdgeInsets.only(right: 8.0),
-                            child: CircleAvatar(radius: 18, backgroundColor: Colors.white54),
-                          )),
-                          if (4 > 3) const Text('+1 more', style: TextStyle(color: Colors.white70)),
-                        ],
-                      ),
-
-                      // Button to navigate to Screen 15
-                      IconButton(
-                        icon: const Icon(Icons.arrow_forward_ios, color: kPrimaryAccentColor, size: 16),
-                        onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const AddCollaboratorsScreen()));
-                        },
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // --- 3. UNLOCK DATE SECTION (Date Picker Placeholder) ---
-            _buildCardContainer(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Set Unlock Time', style: TextStyle(color: Colors.white70, fontSize: 16)),
-                  const SizedBox(height: 8),
-
-                  TextButton.icon(
-                    onPressed: () { /* TODO: Show Date/Time Picker */ },
-                    icon: const Icon(Icons.calendar_month, color: kPrimaryAccentColor),
-                    label: const Text('Select Date and Time', style: TextStyle(color: kPrimaryAccentColor, fontSize: 18)),
-                    style: TextButton.styleFrom(alignment: Alignment.centerLeft, padding: EdgeInsets.zero),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // --- 4. ADD MEDIA/NOTES SECTION ---
-            _buildCardContainer(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Media & Note', style: TextStyle(color: Colors.white70, fontSize: 16)),
-                  const SizedBox(height: 12),
-
-                  // Text Note Input
-                  TextField(
-                    maxLines: 4,
-                    decoration: InputDecoration(
-                      hintText: 'Add a tiny note (max 150 words) to the capsule...',
-                      hintStyle: TextStyle(color: kInactiveColor.withOpacity(0.5)),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
-                      filled: true,
-                      fillColor: Color(0xFF303030), // Slightly lighter background for the input field
-                    ),
-                    style: const TextStyle(color: kAppBarForeground),
-                  ),
-                  const SizedBox(height: 12),
-
-                  // Media Buttons
-                  Row(
-                    children: [
-                      _buildMediaButton(Icons.photo, 'Photos'),
-                      const SizedBox(width: 10),
-                      _buildMediaButton(Icons.videocam, 'Videos'),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 40),
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            AppColors.sunsetBlue,
+            AppColors.sunsetPurple,
+            AppColors.sunsetPink,
+            AppColors.sunsetOrange,
           ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
         ),
       ),
-      bottomNavigationBar: _buildNextStepButton(context),
-    );
-  }
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          foregroundColor: kAppBarForeground,
 
-  Widget _buildMediaButton(IconData icon, String label) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: Color(0xFF303030),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, color: kPrimaryAccentColor, size: 20),
-          const SizedBox(width: 8),
-          Text(label, style: const TextStyle(color: kPrimaryAccentColor)),
-        ],
+          title: Text(
+            'Create Capsule',
+            style: Theme.of(context).textTheme.titleLarge!.copyWith(
+              fontWeight: FontWeight.bold,
+              fontFamily: 'PlayfairDisplay',
+              color: AppColors.goldText,
+              letterSpacing: 1,
+              fontSize: 22,
+            ),
+          ),
+          iconTheme: const IconThemeData(color: AppColors.goldText),
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // --- 1. TITLE SECTION (TextField) ---
+              _buildCardContainer(
+                child: TextField(
+                  decoration: InputDecoration(
+                    labelText: 'Capsule Title',
+                    labelStyle: cardTitleStyle,
+                    hintText: 'e.g., Trip to Kyoto Memories',
+                    hintStyle: hintTextStyle,
+                    border: InputBorder.none,
+                    suffixIcon: const Icon(Icons.lock_rounded, size: 20, color: Colors.white70),
+                  ),
+                  style: inputTextStyle,
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // --- 2. COLLABORATORS SECTION (Navigation to Screen 15) ---
+              _buildCardContainer(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Add Collaborators', style: cardTitleStyle),
+                    const SizedBox(height: 12),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Display selected collaborators
+                        Row(
+                          children: [
+                            ..._collaborators.take(3).map((name) =>
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: CircleAvatar(
+                                    radius: 18,
+                                    backgroundColor: AppColors.sunsetOrange,
+                                    child: Text(name[0], style: const TextStyle(color: Colors.white, fontFamily: 'Roboto')),
+                                  ),
+                                ),
+                            ).toList(),
+
+                            // Display count if more than 3
+                            if (_collaborators.length > 3)
+                              Text('+${_collaborators.length - 3} more', style: const TextStyle(color: Colors.white70, fontFamily: 'Roboto')),
+
+                            // Placeholder if no collaborators
+                            if (_collaborators.isEmpty)
+                              const Icon(Icons.group_add, color: Colors.white54, size: 24),
+                          ],
+                        ),
+
+                        IconButton(
+                          icon: Icon(Icons.arrow_forward_ios, color: AppColors.sunsetOrange, size: 16),
+                          onPressed: _navigateToAddCollaborators, // <--- CALLS NAVIGATOR
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // --- 3. UNLOCK DATE SECTION (Date Picker Placeholder) ---
+              _buildCardContainer(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Set Unlock Time', style: cardTitleStyle),
+                    const SizedBox(height: 8),
+
+                    TextButton.icon(
+                      onPressed: _selectedDate == null || _selectedTime == null ? _selectDate : null,
+                      icon: Icon(Icons.calendar_month, color: AppColors.sunsetOrange),
+                      label: Text(
+                          _selectedDate == null || _selectedTime == null
+                              ? 'Select Date and Time'
+                              : '${_selectedDate!.month}/${_selectedDate!.day}/${_selectedDate!.year} ${_selectedTime!.format(context)}',
+                          style: TextStyle(
+                              color: AppColors.sunsetOrange,
+                              fontSize: 16,
+                              fontFamily: 'Roboto'
+                          )
+                      ),
+                      style: TextButton.styleFrom(alignment: Alignment.centerLeft, padding: EdgeInsets.zero),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // --- 4. ADD MEDIA/NOTES SECTION ---
+              _buildCardContainer(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Media & Note', style: cardTitleStyle),
+                    const SizedBox(height: 12),
+
+                    // Text Note Input
+                    TextField(
+                      maxLines: 4,
+                      decoration: InputDecoration(
+                        hintText: 'Add a tiny note to rekinl your memories in the future...',
+                        hintStyle: hintTextStyle,
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+                        filled: true,
+                        fillColor: const Color(0xFF303030).withOpacity(0.60),
+                      ),
+                      style: inputTextStyle,
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Media Buttons
+                    Row(
+                      children: [
+                        _buildMediaButton(Icons.photo, 'Photos'),
+                        const SizedBox(width: 10),
+                        _buildMediaButton(Icons.videocam, 'Videos'),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 40),
+
+              // --- 5. SEAL CAPSULE BUTTON ---
+              _buildNextStepButton(),
+              const SizedBox(height: 20),
+            ],
+          ),
+        ),
       ),
     );
   }

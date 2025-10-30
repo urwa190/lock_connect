@@ -20,6 +20,7 @@ class LockConnectApp extends StatelessWidget {
 
       // --- THEME FIX: Switching to Light Mode and Soft Colors ---
       theme: ThemeData(
+        fontFamily: 'PlayfairDisplay',
         brightness: Brightness.light, // Set primary brightness to light
         scaffoldBackgroundColor: kLightBackgroundColor, // Use the new light background
         cardColor: kCardColor, // Cards are white/light

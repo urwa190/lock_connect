@@ -1,12 +1,12 @@
 // import 'package:flutter/material.dart';
-// import 'package:lock_connect/core/constants/colors.dart';
-// import '../widgets/visual_capsule_card.dart';
-// import 'create_capsule_screen.dart';
-// import 'capsule_detail_screen.dart'; // Needed for navigation
-//
-// // --- DARK MODE OVERRIDES ---
-// const Color kAppBackground = Color(0xFF121212); // Deep Black Background
-// const Color kAppBarForeground = Colors.white; // White icons/text on dark background
+// import 'dart:math' as math; // Import math for rotation angle
+// import 'package:lock_connect/core/constants/colors.dart'; // Contains kPrimaryAccentColor, kLockedCapsuleBase, etc.
+// import 'package:lock_connect/core/constants/app_colors.dart'; // Contains AppColors.sunsetBlue, AppColors.goldText, etc.
+// import '../widgets/visual_capsule_card.dart'; // The card for the list items
+// import 'create_capsule_screen.dart'; // Screen 14 for the FAB navigation
+// import 'capsule_detail_screen.dart'; // Screen 16 for unlocked capsule navigation
+// import 'collaborations_request_screen.dart';
+// import 'dart:math' as math;
 //
 // class CapsuleHomeScreen extends StatefulWidget {
 //   const CapsuleHomeScreen({super.key});
@@ -18,7 +18,7 @@
 // class _CapsuleHomeScreenState extends State<CapsuleHomeScreen> {
 //   String selectedTab = 'Active';
 //
-//   // FINAL DATA SOURCE: Includes 'unlocksIn' field for SnackBar logic
+//   // FINAL DATA SOURCE: Includes 'unlocksIn' field for Click Logic
 //   final List<Map<String, dynamic>> allCapsules = const [
 //     {'title': 'Summer Trip Memories \'24', 'isLocked': true, 'creationDate': '10/15/2025', 'unlocksIn': '12 Days, 4 Hours'},
 //     {'title': 'Graduation Day Archive', 'isLocked': false, 'creationDate': '05/20/2025', 'unlocksIn': 'Opened'},
@@ -27,17 +27,175 @@
 //     {'title': 'Work Project Launch', 'isLocked': true, 'creationDate': '09/05/2025', 'unlocksIn': '30 Days, 18 Hours'},
 //   ];
 //
-//   // --- NEW: Click Logic Handler (SnackBar or Navigation) ---
+//   // --- Click Logic Handler (Custom Dialog or Navigation) ---
 //   void _handleCardTap(BuildContext context, Map<String, dynamic> capsule) {
 //     if (capsule['isLocked'] == true) {
-//       // --- LOCKED ACTION: Show SnackBar with time remaining ---
-//       final snackBar = SnackBar(
-//         content: Text('Unlocks in: ${capsule['unlocksIn']!}'),
-//         duration: const Duration(seconds: 3),
-//         backgroundColor: kPrimaryAccentColor,
+//       // --- LOCKED ACTION: Show Custom Countdown Dialog ---
+//       showDialog(
+//         context: context,
+//         builder: (BuildContext dialogContext) {
+//           return AlertDialog(
+//             backgroundColor: const Color(0xFF1E1E1E), // Dark background for dialog
+//             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+//             title: Center(
+//                 child: Text(
+//                     'Capsule Sealed',
+//                     // TITLE uses the globally set PlayfairDisplay (via inheritance)
+//                     style: TextStyle(
+//                       color: kPrimaryAccentColor,
+//                       fontWeight: FontWeight.w300,
+//                       // Font family is NOT set here, so it inherits the global 'PlayfairDisplay'.
+//                     )
+//                 )
+//             ),
+//             content: Column(
+//               mainAxisSize: MainAxisSize.min,
+//               children: [
+//                 const Icon(Icons.lock_rounded, size: 52, color: Colors.white),
+//                 const SizedBox(height: 20),
+//                 const Text(
+//                     'Unlocks in:',
+//                     style: TextStyle(
+//                       color: Colors.white70,
+//                       fontSize: 14,
+//                       // EXPLICITLY set the font to Roboto
+//                       fontFamily: 'Roboto',
+//                     )
+//                 ),
+//                 Text(
+//                     capsule['unlocksIn']!,
+//                     style: const TextStyle(
+//                       color: Colors.white,
+//                       fontSize: 18,
+//                       fontWeight: FontWeight.w400,
+//                       // EXPLICITLY set the font to Roboto
+//                       fontFamily: 'Roboto',
+//                     )
+//                 ),
+//               ],
+//             ),
+//             actions: [
+//               TextButton(
+//                 onPressed: () => Navigator.of(dialogContext).pop(),
+//                 child: const Text(
+//                     'OK',
+//                     style: TextStyle(
+//                       color: kPrimaryAccentColor,
+//                       // EXPLICITLY set the font to Roboto
+//                       fontFamily: 'Roboto',
+//                     )
+//                 ),
+//               ),
+//             ],
+//           );
+//           return AlertDialog(
+//             backgroundColor: const Color(0xFF1E1E1E), // Dark background for dialog
+//             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+//             title: Center(
+//                 child: Text(
+//                     'Capsule Sealed',
+//                     // TITLE uses the globally set PlayfairDisplay (via inheritance/default)
+//                     style: TextStyle(
+//                       color: kPrimaryAccentColor,
+//                       fontWeight: FontWeight.w300,
+//                       // The font family is NOT set here, so it inherits the global PlayfairDisplay.
+//                     )
+//                 )
+//             ),
+//             content: Column(
+//               mainAxisSize: MainAxisSize.min,
+//               children: [
+//                 const Icon(Icons.lock_rounded, size: 52, color: Colors.white),
+//                 const SizedBox(height: 20),
+//                 const Text(
+//                     'Unlocks in:',
+//                     style: TextStyle(
+//                       color: Colors.white70,
+//                       fontSize: 12,
+//                       // Explicitly setting fontFamily to null makes it use the underlying system default,
+//                       // bypassing the global PlayfairDisplay setting in ThemeData.
+//                       fontFamily: null,
+//                     )
+//                 ),
+//                 Text(
+//                     capsule['unlocksIn']!,
+//                     style: const TextStyle(
+//                       color: Colors.white,
+//                       fontSize: 18,
+//                       fontWeight: FontWeight.w400,
+//                       fontFamily: null, // Bypasses global PlayfairDisplay
+//                     )
+//                 ),
+//               ],
+//             ),
+//             actions: [
+//               TextButton(
+//                 onPressed: () => Navigator.of(dialogContext).pop(),
+//                 child: const Text(
+//                     'OK',
+//                     style: TextStyle(
+//                       color: kPrimaryAccentColor,
+//                       fontFamily: null, // Bypasses global PlayfairDisplay
+//                     )
+//                 ),
+//               ),
+//             ],
+//           );
+//           return AlertDialog(
+//             backgroundColor: const Color(0xFF1E1E1E), // Dark background for dialog
+//             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+//             title: Center(
+//                 child: Text(
+//                     'Capsule Sealed',
+//                     // TITLE uses the globally set PlayfairDisplay (via inheritance/default)
+//                     style: TextStyle(
+//                       color: kPrimaryAccentColor,
+//                       fontWeight: FontWeight.w300,
+//                       // The font family is NOT set here, so it inherits the global PlayfairDisplay.
+//                     )
+//                 )
+//             ),
+//             content: Column(
+//               mainAxisSize: MainAxisSize.min,
+//               children: [
+//                 const Icon(Icons.lock_rounded, size: 52, color: Colors.white),
+//                 const SizedBox(height: 20),
+//                 const Text(
+//                     'Unlocks in:',
+//                     style: TextStyle(
+//                       color: Colors.white70,
+//                       fontSize: 12,
+//                       // Explicitly setting fontFamily to null makes it use the underlying system default,
+//                       // bypassing the global PlayfairDisplay setting in ThemeData.
+//                       fontFamily: null,
+//                     )
+//                 ),
+//                 Text(
+//                     capsule['unlocksIn']!,
+//                     style: const TextStyle(
+//                       color: Colors.white,
+//                       fontSize: 18,
+//                       fontWeight: FontWeight.w400,
+//                       fontFamily: null, // Bypasses global PlayfairDisplay
+//                     )
+//                 ),
+//               ],
+//             ),
+//             actions: [
+//               TextButton(
+//                 onPressed: () => Navigator.of(dialogContext).pop(),
+//                 child: const Text(
+//                     'OK',
+//                     style: TextStyle(
+//                       color: kPrimaryAccentColor,
+//                       fontFamily: null, // Bypasses global PlayfairDisplay
+//                     )
+//                 ),
+//               ),
+//             ],
+//           );
+//         },
 //       );
-//       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-//
 //     } else {
 //       // --- UNLOCKED ACTION: Navigate to Capsule Details Screen (Screen 16) ---
 //       Navigator.push(
@@ -48,7 +206,6 @@
 //             isLocked: false,
 //             creationDate: capsule['creationDate']!,
 //             unlocksIn: capsule['unlocksIn']!,
-//             // Placeholders for content that would normally come from a database
 //             mockMediaUrls: const ['url1', 'url2'],
 //             mockNotes: 'A delightful note from collaborators.',
 //           ),
@@ -59,52 +216,108 @@
 //
 //   @override
 //   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: kAppBackground,
-//       appBar: AppBar(
-//         backgroundColor: kAppBackground,
-//         foregroundColor: kAppBarForeground,
-//         elevation: 0,
+//     // WRAP the entire Scaffold in a Container with the gradient for seamless background
+//     return Container(
+//       decoration: const BoxDecoration(
+//         gradient: LinearGradient(
+//           colors: [
+//             AppColors.sunsetBlue,
+//             AppColors.sunsetPurple,
+//             AppColors.sunsetPink,
+//             AppColors.sunsetOrange,
+//           ],
+//           begin: Alignment.topCenter,
+//           end: Alignment.bottomCenter,
+//         ),
+//       ),
+//       child: Scaffold(
+//         // Set Scaffold and AppBar backgrounds to transparent so the gradient shows through
+//         backgroundColor: Colors.transparent,
+//         appBar: AppBar(
+//           backgroundColor: Colors.transparent,
+//           foregroundColor: Colors.white, // White icons/text
+//           elevation: 0,
 //
-//         automaticallyImplyLeading: false,
-//         title: Row(
-//           children: [
-//             const CircleAvatar(
-//               radius: 18,
-//               backgroundColor: kPrimaryAccentColor,
-//               child: Text('U', style: TextStyle(color: Colors.black)),
+//           automaticallyImplyLeading: false,
+//           title: Row(
+//             children: [
+//               // 1. TILTED CAPSULE ICON
+//               Padding(
+//                 padding: const EdgeInsets.only(right: 0.1),
+//                 child: Transform.rotate(
+//                   angle: 0.6, // Tilted anti-clockwise
+//                   child: Image(
+//                     image: const AssetImage('assets/images/capsule.png'),
+//                     fit: BoxFit.contain,
+//                     width: 40,
+//                     height: 40,
+//                     filterQuality: FilterQuality.high,
+//                   ),
+//                 ),
+//               ),
+//
+//
+//
+//               // 3. CUSTOM STYLING FOR "Capsules" TEXT
+//               Text(
+//                   'Capsules',
+//                   style: Theme.of(context).textTheme.titleLarge!.copyWith(
+//                     fontWeight: FontWeight.bold,
+//                     fontFamily: 'PlayfairDisplay',
+//                     color: AppColors.goldText,
+//                     letterSpacing: 1,
+//                     fontSize: 22,
+//                   )
+//               ),
+//             ],
+//           ),
+//           actions: [
+//             IconButton(
+//               icon: const Icon(Icons.person_add_alt_1_outlined, color: Colors.white),
+//               onPressed: () {
+//                 // Add this import at the top of capsule_home_screen.dart
+//
+// // ... inside the build method of _CapsuleHomeScreenState:
+//
+//                 actions: [
+//                   IconButton(
+//                     icon: const Icon(Icons.person_add_alt_1_outlined, color: Colors.white),
+//                     onPressed: () {
+//                       // --- MODIFIED NAVIGATION ---
+//                       Navigator.push(
+//                         context,
+//                         MaterialPageRoute(builder: (context) => const CollaborationRequestsScreen()),
+//                       );
+//                     },
+//                   ),
+//                   const SizedBox(width: 10),
+//                 ],
+//                 ),/* TODO: Navigate to Friend Requests Screen */ },
 //             ),
 //             const SizedBox(width: 10),
-//             Text('Capsules', style: Theme.of(context).textTheme.titleLarge!.copyWith(color: kAppBarForeground)),
 //           ],
 //         ),
-//         actions: [
-//           // Pending Invites/Friends Icon
-//           IconButton(
-//             icon: const Icon(Icons.person_add_alt_1_outlined, color: kAppBarForeground),
-//             onPressed: () { /* TODO: Navigate to Friend Requests Screen */ },
-//           ),
-//           const SizedBox(width: 10),
-//         ],
+//
+//         body: ListView(
+//           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+//           children: [
+//             _buildFilterTabs(),
+//             const SizedBox(height: 20),
+//             _buildFilteredList(selectedTab),
+//           ],
+//         ),
+//
+//         floatingActionButton: FloatingActionButton(
+//           backgroundColor: AppColors.sunsetOrange,
+//           onPressed: () {
+//             Navigator.push(
+//               context,
+//               MaterialPageRoute(builder: (context) => const CreateCapsuleScreen()),
+//             );
+//           },
+//           child: const Icon(Icons.add, color: Colors.white),
+//         ),
 //       ),
-//       body: ListView(
-//         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-//         children: [
-//           _buildFilterTabs(),
-//           const SizedBox(height: 20),
-//           _buildFilteredList(selectedTab),
-//         ],
-//       ),
-//       floatingActionButton: FloatingActionButton(
-//         onPressed: () {
-//           Navigator.push(
-//             context,
-//             MaterialPageRoute(builder: (context) => const CreateCapsuleScreen()),
-//           );
-//         },
-//         child: const Icon(Icons.add),
-//       ),
-//       bottomNavigationBar: _buildBottomNavBar(),
 //     );
 //   }
 //
@@ -124,14 +337,17 @@
 //             child: Container(
 //               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
 //               decoration: BoxDecoration(
-//                 color: isSelected ? kPrimaryAccentColor : const Color(0xFF303030),
-//                 borderRadius: BorderRadius.circular(30), // CAPSULE SHAPE
+//                 // Using a dark gray for unselected tabs for visibility against the dark gradient
+//                 color: isSelected ? AppColors.sunsetOrange : const Color(0xFF303030),
+//
+//                 borderRadius: BorderRadius.circular(30),
 //               ),
 //               child: Text(
 //                   tab,
 //                   style: TextStyle(
-//                     color: isSelected ? Colors.black : kAppBarForeground,
+//                     color: Colors.white,
 //                     fontWeight: FontWeight.w600,
+//                     fontFamily: 'Roboto',
 //                   )
 //               ),
 //             ),
@@ -145,22 +361,20 @@
 //   Widget _buildFilteredList(String tab) {
 //     List filteredList;
 //
-//     // Filtering logic based on tab selection
 //     if (tab == 'Locked') {
 //       filteredList = allCapsules.where((c) => c['isLocked'] == true).toList();
 //     } else if (tab == 'Unlocked') {
 //       filteredList = allCapsules.where((c) => c['isLocked'] == false).toList();
 //     } else {
-//       filteredList = allCapsules; // 'Active' tab shows all
+//       filteredList = allCapsules;
 //     }
 //
-//     // Build the VisualCard for each item
 //     return Column(
 //       children: filteredList.map((capsule) {
 //         bool isLocked = capsule['isLocked'] as bool;
 //         String creationDate = capsule['creationDate'] as String;
 //
-//         // Correctly apply pastel tint against the dark background
+//         // Base color for the capsule card gradient tint
 //         Color color = isLocked ? kLockedCapsuleBase : kUnlockedCapsuleBase;
 //
 //         return VisualCapsuleCard(
@@ -168,44 +382,25 @@
 //           baseColor: color,
 //           isLocked: isLocked,
 //           creationDate: creationDate,
-//           // --- PASS INTERACTIVITY HANDLER ---
 //           onTap: () => _handleCardTap(context, capsule),
 //         );
 //       }).toList(),
 //     );
 //   }
-//
-//   // --- Helper: Bottom Navigation Bar ---
-//   Widget _buildBottomNavBar() {
-//     return BottomNavigationBar(
-//       backgroundColor: const Color(0xFF1E1E1E),
-//       selectedItemColor: kPrimaryAccentColor,
-//       unselectedItemColor: kAppBarForeground.withOpacity(0.5),
-//       showSelectedLabels: false,
-//       showUnselectedLabels: false,
-//       type: BottomNavigationBarType.fixed,
-//       items: const <BottomNavigationBarItem>[
-//         BottomNavigationBarItem(icon: Icon(Icons.home_filled), label: ''),
-//         BottomNavigationBarItem(icon: Icon(Icons.forum), label: ''),
-//         BottomNavigationBarItem(icon: Icon(Icons.history), label: ''),
-//         BottomNavigationBarItem(icon: Icon(Icons.folder), label: ''),
-//         BottomNavigationBarItem(icon: Icon(Icons.person), label: ''),
-//       ],
-//     );
-//   }
 // }
 
-// lib/features/capsules/screens/capsule_home_screen.dart
 
 import 'package:flutter/material.dart';
-import 'package:lock_connect/core/constants/colors.dart';
-import '../widgets/visual_capsule_card.dart';
-import 'create_capsule_screen.dart';
-import 'capsule_detail_screen.dart'; // Needed for navigation
+import 'dart:math' as math;
+import 'package:lock_connect/core/constants/colors.dart'; // Contains kPrimaryAccentColor, kLockedCapsuleBase, etc.
+import 'package:lock_connect/core/constants/app_colors.dart'; // Contains AppColors.sunsetBlue, AppColors.goldText, etc.
+import '../widgets/visual_capsule_card.dart'; // The card for the list items
+import 'create_capsule_screen.dart'; // Screen 14 for the FAB navigation
+import 'capsule_detail_screen.dart'; // Screen 16 for unlocked capsule navigation
 
-// --- DARK MODE OVERRIDES ---
-const Color kAppBackground = Color(0xFF121212); // Deep Black Background
-const Color kAppBarForeground = Colors.white; // White icons/text on dark background
+// --- NEW IMPORT ---
+import 'collaborations_request_screen.dart'; // Screen for managing requests
+// --------------------
 
 class CapsuleHomeScreen extends StatefulWidget {
   const CapsuleHomeScreen({super.key});
@@ -226,20 +421,23 @@ class _CapsuleHomeScreenState extends State<CapsuleHomeScreen> {
     {'title': 'Work Project Launch', 'isLocked': true, 'creationDate': '09/05/2025', 'unlocksIn': '30 Days, 18 Hours'},
   ];
 
-  // --- UPDATED: Click Logic Handler (Custom Dialog or Navigation) ---
+  // --- Click Logic Handler (Custom Dialog or Navigation) ---
   void _handleCardTap(BuildContext context, Map<String, dynamic> capsule) {
     if (capsule['isLocked'] == true) {
-      // --- LOCKED ACTION: Show Custom Countdown Dialog (UX IMPROVEMENT) ---
+      // --- LOCKED ACTION: Show Custom Countdown Dialog ---
       showDialog(
         context: context,
         builder: (BuildContext dialogContext) {
           return AlertDialog(
-            backgroundColor: kAppBackground, // Dark background for contrast
+            backgroundColor: const Color(0xFF1E1E1E), // Dark background for dialog
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             title: Center(
                 child: Text(
                     'Capsule Sealed',
-                    style: TextStyle(color: kPrimaryAccentColor, fontWeight: FontWeight.w300)
+                    style: TextStyle(
+                      color: kPrimaryAccentColor,
+                      fontWeight: FontWeight.w300,
+                    )
                 )
             ),
             content: Column(
@@ -247,27 +445,40 @@ class _CapsuleHomeScreenState extends State<CapsuleHomeScreen> {
               children: [
                 const Icon(Icons.lock_rounded, size: 52, color: Colors.white),
                 const SizedBox(height: 20),
-                // Display the time prominently
-                Text(
+                const Text(
                     'Unlocks in:',
-                    style: TextStyle(color: Colors.white70, fontSize: 12)
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: 14,
+                      fontFamily: 'Roboto', // Explicitly set the font to Roboto
+                    )
                 ),
                 Text(
-                    capsule['unlocksIn']!, // e.g., "12 Days, 4 Hours"
-                    style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w400)
+                    capsule['unlocksIn']!,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w400,
+                      fontFamily: 'Roboto', // Explicitly set the font to Roboto
+                    )
                 ),
               ],
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(dialogContext).pop(),
-                child: const Text('OK', style: TextStyle(color: kPrimaryAccentColor)),
+                child: const Text(
+                    'OK',
+                    style: TextStyle(
+                      color: kPrimaryAccentColor,
+                      fontFamily: 'Roboto', // Explicitly set the font to Roboto
+                    )
+                ),
               ),
             ],
           );
         },
       );
-
     } else {
       // --- UNLOCKED ACTION: Navigate to Capsule Details Screen (Screen 16) ---
       Navigator.push(
@@ -288,51 +499,94 @@ class _CapsuleHomeScreenState extends State<CapsuleHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: kAppBackground,
-      appBar: AppBar(
-        backgroundColor: kAppBackground,
-        foregroundColor: kAppBarForeground,
-        elevation: 0,
+    // WRAP the entire Scaffold in a Container with the gradient for seamless background
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            AppColors.sunsetBlue,
+            AppColors.sunsetPurple,
+            AppColors.sunsetPink,
+            AppColors.sunsetOrange,
+          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
+      ),
+      child: Scaffold(
+        // Set Scaffold and AppBar backgrounds to transparent so the gradient shows through
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          foregroundColor: Colors.white, // White icons/text
+          elevation: 0,
 
-        automaticallyImplyLeading: false,
-        title: Row(
-          children: [
-            const CircleAvatar(
-              radius: 18,
-              backgroundColor: kPrimaryAccentColor,
-              child: Text('U', style: TextStyle(color: Colors.black)),
+          automaticallyImplyLeading: false,
+          title: Row(
+            children: [
+              // 1. TILTED CAPSULE ICON
+              Padding(
+                padding: const EdgeInsets.only(right: 0.1),
+                child: Transform.rotate(
+                  angle: 0.6, // Tilted anti-clockwise
+                  child: Image(
+                    image: const AssetImage('assets/images/capsule.png'),
+                    fit: BoxFit.contain,
+                    width: 40,
+                    height: 40,
+                    filterQuality: FilterQuality.high,
+                  ),
+                ),
+              ),
+
+              // 3. CUSTOM STYLING FOR "Capsules" TEXT
+              Text(
+                  'Capsules',
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'PlayfairDisplay',
+                    color: AppColors.goldText,
+                    letterSpacing: 1,
+                    fontSize: 22,
+                  )
+              ),
+            ],
+          ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.person_add_alt_1_outlined, color: Colors.white),
+              onPressed: () {
+                // --- IMPLEMENTED NAVIGATION TO REQUESTS SCREEN ---
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CollaborationRequestsScreen()),
+                );
+              },
             ),
             const SizedBox(width: 10),
-            Text('Capsules', style: Theme.of(context).textTheme.titleLarge!.copyWith(color: kAppBarForeground)),
           ],
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.person_add_alt_1_outlined, color: kAppBarForeground),
-            onPressed: () { /* TODO: Navigate to Friend Requests Screen */ },
-          ),
-          const SizedBox(width: 10),
-        ],
+
+        body: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          children: [
+            _buildFilterTabs(),
+            const SizedBox(height: 20),
+            _buildFilteredList(selectedTab),
+          ],
+        ),
+
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: AppColors.sunsetOrange,
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const CreateCapsuleScreen()),
+            );
+          },
+          child: const Icon(Icons.add, color: Colors.white),
+        ),
       ),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-        children: [
-          _buildFilterTabs(),
-          const SizedBox(height: 20),
-          _buildFilteredList(selectedTab),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const CreateCapsuleScreen()),
-          );
-        },
-        child: const Icon(Icons.add),
-      ),
-      bottomNavigationBar: _buildBottomNavBar(),
     );
   }
 
@@ -352,14 +606,17 @@ class _CapsuleHomeScreenState extends State<CapsuleHomeScreen> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
               decoration: BoxDecoration(
-                color: isSelected ? kPrimaryAccentColor : const Color(0xFF303030),
+                // Use Sunset Orange for selected tab
+                color: isSelected ? AppColors.sunsetOrange : const Color(0xFF303030),
+
                 borderRadius: BorderRadius.circular(30),
               ),
               child: Text(
                   tab,
-                  style: TextStyle(
-                    color: isSelected ? Colors.black : kAppBarForeground,
+                  style: const TextStyle(
+                    color: Colors.white,
                     fontWeight: FontWeight.w600,
+                    fontFamily: 'Roboto',
                   )
               ),
             ),
@@ -386,6 +643,7 @@ class _CapsuleHomeScreenState extends State<CapsuleHomeScreen> {
         bool isLocked = capsule['isLocked'] as bool;
         String creationDate = capsule['creationDate'] as String;
 
+        // Base color for the capsule card gradient tint
         Color color = isLocked ? kLockedCapsuleBase : kUnlockedCapsuleBase;
 
         return VisualCapsuleCard(
@@ -396,25 +654,6 @@ class _CapsuleHomeScreenState extends State<CapsuleHomeScreen> {
           onTap: () => _handleCardTap(context, capsule),
         );
       }).toList(),
-    );
-  }
-
-  // --- Helper: Bottom Navigation Bar ---
-  Widget _buildBottomNavBar() {
-    return BottomNavigationBar(
-      backgroundColor: const Color(0xFF1E1E1E),
-      selectedItemColor: kPrimaryAccentColor,
-      unselectedItemColor: kAppBarForeground.withOpacity(0.5),
-      showSelectedLabels: false,
-      showUnselectedLabels: false,
-      type: BottomNavigationBarType.fixed,
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(icon: Icon(Icons.home_filled), label: ''),
-        BottomNavigationBarItem(icon: Icon(Icons.forum), label: ''),
-        BottomNavigationBarItem(icon: Icon(Icons.history), label: ''),
-        BottomNavigationBarItem(icon: Icon(Icons.folder), label: ''),
-        BottomNavigationBarItem(icon: Icon(Icons.person), label: ''),
-      ],
     );
   }
 }
