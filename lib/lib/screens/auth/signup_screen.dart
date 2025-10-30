@@ -27,7 +27,7 @@ class SignupScreen extends StatelessWidget {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                // ✨ Title
+                //Title
                 const Text(
                   'Join Rekindl',
                   style: TextStyle(
@@ -50,7 +50,7 @@ class SignupScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 40),
 
-                // 📋 Form Container
+                //Form Container
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.15),
@@ -69,7 +69,7 @@ class SignupScreen extends StatelessWidget {
                       _buildTextField(Icons.lock_outline, 'Confirm Password', obscureText: true),
                       const SizedBox(height: 28),
 
-                      // 🌟 Signup Button (original color, but new font)
+                      //Signup Button
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
@@ -93,7 +93,7 @@ class SignupScreen extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
-                              fontFamily: 'PlayfairDisplay', // 🎨 changed font here
+                              fontFamily: 'PlayfairDisplay',
                               color: AppColors.textPrimary,
                             ),
                           ),
@@ -105,7 +105,7 @@ class SignupScreen extends StatelessWidget {
 
                 const SizedBox(height: 25),
 
-                // 🔁 Login Link
+                //Login Link
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
@@ -143,7 +143,7 @@ class SignupScreen extends StatelessWidget {
     );
   }
 
-  // 🟣 TextField with white icons & simple style
+  //TextField with icons
   Widget _buildTextField(IconData icon, String hintText, {bool obscureText = false}) {
     return TextField(
       obscureText: obscureText,
@@ -154,7 +154,6 @@ class SignupScreen extends StatelessWidget {
         hintStyle: const TextStyle(color: Colors.white70, fontSize: 16),
         filled: true,
         fillColor: Colors.black.withOpacity(0.6),
-        //fillColor: AppColors.sunsetPurple, // 💜 field color same
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
           borderSide: const BorderSide(color: Colors.white30),

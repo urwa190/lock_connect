@@ -36,6 +36,16 @@ class _HomeScreenState extends State<HomeScreen> {
     ),
     const Center(
       child: Text(
+        'Create Something New!',
+        style: TextStyle(
+          color: AppColors.goldText,
+          fontSize: 24,
+          fontFamily: 'PlayfairDisplay',
+        ),
+      ),
+    ),
+    const Center(
+      child: Text(
         'Threads Screen',
         style: TextStyle(
           color: AppColors.goldText,
@@ -44,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     ),
-    ProfileScreen(), // actual profile screen
+    const ProfileScreen(), // 🟢 last one for Profile
   ];
 
   void _onItemTapped(int index) {
@@ -87,8 +97,12 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.healing), // Capsule-like icon
+            icon: Icon(Icons.healing),// Capsules buttone
             label: 'Capsules',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add_box_rounded), //Create Button
+            label: 'Create',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.forum), // Threads
@@ -96,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            label: 'Profile',
+            label: 'Profile', //for profile
           ),
         ],
       ),

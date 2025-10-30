@@ -18,7 +18,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        // 🌈 Gradient background
+        // Gradient background
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
@@ -37,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // 🔒 Bigger Logo Box
+                // Logo Box
                 Container(
                   width: 170,
                   height: 170,
@@ -61,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 const SizedBox(height: 30),
 
-                // ✨ Title
+                // Title
                 const Text(
                   'Welcome Back to Rekindl',
                   style: TextStyle(
@@ -74,7 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 const SizedBox(height: 30),
 
-                // 👤 Username Field with icon
+                // Username Field with icon
                 TextField(
                   decoration: InputDecoration(
                     prefixIcon: const Icon(Icons.person, color: Colors.white70),
@@ -94,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 const SizedBox(height: 15),
 
-                // 📧 Email Field with icon
+                // Email Field with icon
                 TextField(
                   decoration: InputDecoration(
                     prefixIcon: const Icon(Icons.email, color: Colors.white70),
@@ -114,7 +114,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 const SizedBox(height: 15),
 
-                // 🔑 Password Field with icon
+                // Password Field with icon
                 TextField(
                   obscureText: _obscurePassword,
                   decoration: InputDecoration(
@@ -148,7 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 const SizedBox(height: 10),
 
-                // 🔗 Forgot Password (Right-aligned)
+                //Forgot Password
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
@@ -171,7 +171,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 const SizedBox(height: 10),
 
-                // 🟠 Login Button
+                // Login Button
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -203,7 +203,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 const SizedBox(height: 25),
 
-                // 🔁 Signup Link
+                //Signup Link
                 GestureDetector(
                   onTap: () {
                     Navigator.push(

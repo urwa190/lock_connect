@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_colors.dart';
 import 'edit_profile.dart';
+import 'explore_friends.dart';
 import 'friends_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -19,11 +20,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: AppColors.background,
-      endDrawer: _buildAppDrawer(context), // Drawer now opens from right
+      endDrawer: _buildAppDrawer(context), // Updated Drawer
       appBar: AppBar(
-        automaticallyImplyLeading: false, // removes default hamburger
+        automaticallyImplyLeading: false,
         backgroundColor: AppColors.sunsetBlue,
-        centerTitle: false, // title centered
+        centerTitle: false,
         title: const Text(
           "Profile",
           style: TextStyle(
@@ -34,7 +35,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         actions: [
           IconButton(
-            onPressed: () => _scaffoldKey.currentState?.openEndDrawer(), // open right drawer
+            onPressed: () => _scaffoldKey.currentState?.openEndDrawer(),
             icon: const Icon(
               Icons.menu_rounded,
               color: AppColors.goldText,
@@ -47,7 +48,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
-
               AppColors.sunsetBlue,
               AppColors.sunsetPurple,
               AppColors.sunsetPink,
@@ -64,7 +64,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 20),
-                // 🔹 Profile Picture + Stats
+
+                // Profile Picture + Stats
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -99,8 +100,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ],
                 ),
+
                 const SizedBox(width: 20),
-                // 🔹 Name & Bio
+
+                // Name & Bio
                 const Text(
                   'John Doe',
                   style: TextStyle(
@@ -120,7 +123,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                // 🔹 Edit Profile Button
+
+                // Edit Profile Button
                 Center(
                   child: ElevatedButton(
                     onPressed: () {
@@ -146,8 +150,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                 ),
+
                 const SizedBox(height: 25),
-                // 🔹 Tabs Row with Icons
+
+                // Tabs Row
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.black.withOpacity(0.2),
@@ -159,21 +165,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       _buildTabItem(0, Icons.collections, 'Collections'),
-                      _buildTabItem(1, Icons.all_inclusive, 'Capsules'),
-                      _buildTabItem(2, Icons.forum_outlined, 'Threads'),
+                      _buildTabItem(1, Icons.explore_outlined, 'Explore'),
                     ],
                   ),
                 ),
+
                 const SizedBox(height: 20),
-                // 🔹 Tab Content
+
+                // Tab Content
                 Expanded(
                   child: AnimatedSwitcher(
                     duration: const Duration(milliseconds: 300),
                     child: _selectedTab == 0
                         ? _buildCollectionSection()
-                        : _selectedTab == 1
-                        ? _buildCapsulesSection()
-                        : _buildThreadsSection(),
+                        : _buildExploreSection(),
                   ),
                 ),
               ],
@@ -183,25 +188,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
-
-  // 🔹 Drawer Menu (Right side) with light grey subtle header
   Drawer _buildAppDrawer(BuildContext context) {
-    // Solid colors for the drawer
-    // Very light grey/Off-white for the main background
     const Color drawerBackgroundColor = AppColors.sunsetPurple;
-    // Slightly darker solid grey for the header area
     const Color headerBackgroundColor = Colors.white24;
-    // Dark color for text and icons for readability
     const Color textIconColor = Colors.white;
 
     return Drawer(
-      // 1. Removed transparency (Colors.white10 -> solid Color)
       backgroundColor: drawerBackgroundColor,
       child: Column(
         children: [
           DrawerHeader(
             decoration: const BoxDecoration(
-              // 2. Removed transparency (Colors.white70 -> solid Color)
               color: headerBackgroundColor,
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(30),
@@ -221,7 +218,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   const Text(
                     "John Doe",
                     style: TextStyle(
-                      // Changed text color for contrast on light background
                       color: textIconColor,
                       fontSize: 20,
                       fontFamily: 'PlayfairDisplay',
@@ -233,20 +229,109 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
           const SizedBox(height: 10),
-          // 3. Passing textIconColor to the helper function
-          _drawerItem(Icons.person, "My Profile", () => Navigator.pop(context), textIconColor),
-          _drawerItem(Icons.settings, "Settings", () => Navigator.pop(context), textIconColor),
-          _drawerItem(Icons.feedback_outlined, "Feedback", () => Navigator.pop(context), textIconColor),
-          _drawerItem(Icons.help_outline, "Help", () => Navigator.pop(context), textIconColor),
+
+          // My Profile
+          _drawerItem(Icons.person, "My Profile", () {
+            Navigator.pop(context);
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const ProfileScreen()),
+            );
+          }, textIconColor),
+
+          // Settings
+          _drawerItem(Icons.settings, "Settings", () {
+            Navigator.pop(context);
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("Settings will open the settings screen.",
+                  style: TextStyle(color: Colors.white),
+                ),
+                duration: Duration(seconds: 2),
+                backgroundColor: AppColors.sunsetPurple
+              ),
+            );
+          }, textIconColor),
+
+          // Feedback
+          _drawerItem(Icons.feedback_outlined, "Feedback", () {
+            Navigator.pop(context);
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("Feedback section coming soon.",
+                style: TextStyle(color: Colors.white),),
+                duration: Duration(seconds: 2),
+                backgroundColor: AppColors.sunsetPurple,
+              ),
+            );
+          }, textIconColor),
+
+          // Help
+          _drawerItem(Icons.help_outline, "Help", () {
+            Navigator.pop(context);
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("Help desk will open soon.",
+                  style: TextStyle(color: Colors.white),
+                ),
+                duration: Duration(seconds: 2),
+                backgroundColor: AppColors.sunsetPurple,
+              ),
+            );
+          }, textIconColor),
+
           const Spacer(),
-          _drawerItem(Icons.logout, "Logout", () => Navigator.pop(context), textIconColor),
+
+          // Logout
+          _drawerItem(Icons.logout, "Logout", () {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                backgroundColor: AppColors.sunsetPurple,
+                title: const Text(
+                  "Logout Confirmation",
+                  style: TextStyle(
+                    color: AppColors.goldText,
+                    fontFamily: 'PlayfairDisplay',
+                  ),
+                ),
+                content: const Text(
+                  "Are you sure you want to logout?",
+                  style: TextStyle(color: Colors.white),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text(
+                      "Cancel",
+                      style: TextStyle(color: Colors.white70),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => const ProfileScreen()),
+                      );
+                    },
+                    child: const Text(
+                      "Logout",
+                      style: TextStyle(color: AppColors.sunsetOrange),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }, textIconColor),
+
           const SizedBox(height: 20),
         ],
       ),
     );
   }
 
-  // 4. Updated _drawerItem to accept and use the color parameter
   ListTile _drawerItem(IconData icon, String title, VoidCallback onTap, Color color) {
     return ListTile(
       leading: Icon(icon, color: color),
@@ -263,7 +348,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // 🔹 Helper: Tabs with Icons
+  // Helper: Tabs with Icons
   Widget _buildTabItem(int index, IconData icon, String label) {
     final bool isSelected = _selectedTab == index;
 
@@ -299,7 +384,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // 🔹 Sections
+  // Sections
   Widget _buildCollectionSection() {
     return GridView.count(
       crossAxisCount: 2,
@@ -309,39 +394,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // MODIFIED: Capsules section now shows different content
-  Widget _buildCapsulesSection() {
-    return const Center(
-      child: Text(
-        'No Capsules created yet.',
-        key: ValueKey('capsules-empty'),
-        style: TextStyle(
-          color: AppColors.textHint,
-          fontSize: 18,
-          fontFamily: 'PlayfairDisplay',
+  // Explore Section
+  Widget _buildExploreSection() {
+    return Center(
+      key: const ValueKey('explore'),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.sunsetOrange,
+          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(25),
+          ),
         ),
-      ),
-    );
-  }
-
-  // MODIFIED: Threads section now shows different content
-  Widget _buildThreadsSection() {
-    return const Center(
-      child: Text(
-        'Start a new Thread to share a memory!',
-        key: ValueKey('threads-empty'),
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          color: AppColors.textHint,
-          fontSize: 18,
-          fontFamily: 'PlayfairDisplay',
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ExploreFriendsScreen()),
+          );
+        },
+        child: const Text(
+          'Explore Friends',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontFamily: 'PlayfairDisplay',
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );
   }
 }
 
-// 🔸 Profile Stat Widget
+// Profile Stat Widget
 class _ProfileStat extends StatelessWidget {
   final String label;
   final String value;
@@ -386,7 +471,7 @@ class _ProfileStat extends StatelessWidget {
   }
 }
 
-// 🔸 Collection Box Widget (Kept the same)
+// Collection Box Widget
 class CollectionBox extends StatelessWidget {
   final String title;
 

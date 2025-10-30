@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-// 1. IMPORT YOUR SPLASH SCREEN
 import 'package:lock_connect/lib/screens/auth/splash_screen.dart';
 
 void main() {
@@ -14,7 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Capsule Connect',
       debugShowCheckedModeBanner: false,
-      // 2. SET SPLASH SCREEN AS THE HOME WIDGET
+      //SET SPLASH SCREEN AS THE HOME WIDGET
       home: const SplashScreen(),
     );
   }

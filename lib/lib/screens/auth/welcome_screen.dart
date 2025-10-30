@@ -5,7 +5,7 @@ import 'login_screen.dart';
 import 'package:flutter/material.dart';
 import '../../theme/app_colors.dart';
 import 'login_screen.dart';
-import 'signup_screen.dart'; // 👈 Add this import
+import 'signup_screen.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -32,7 +32,7 @@ class WelcomeScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // 🔒 Logo
+            // Logo
             Padding(
               padding: const EdgeInsets.only(bottom: 0),
               child: Image.asset(
@@ -40,7 +40,7 @@ class WelcomeScreen extends StatelessWidget {
                 height: 280,
               ),
             ),
-            // 📝 App Name
+            // App Name
             const Text(
               'Rekindl',
               style: TextStyle(
@@ -54,7 +54,7 @@ class WelcomeScreen extends StatelessWidget {
 
             const SizedBox(height: 4),
 
-            // 💬 Tagline
+            // Tagline
             const Text(
               'Capture memories,\nRekindle connections.',
               textAlign: TextAlign.center,
@@ -69,7 +69,7 @@ class WelcomeScreen extends StatelessWidget {
 
             const SizedBox(height: 40),
 
-            // 🟠 Get Started Button → Go to SignupScreen
+            // Get Started Button > Go to SignupScreen
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -100,7 +100,7 @@ class WelcomeScreen extends StatelessWidget {
 
             const SizedBox(height: 30),
 
-            // 🔁 Login Link
+            // Login Link
             GestureDetector(
               onTap: () {
                 Navigator.push(

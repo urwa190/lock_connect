@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
+  video_player: ^2.8.6
 
 dev_dependencies:
   flutter_test:
@@ -23,6 +24,10 @@ flutter:
   assets:
     - assets/logo.png
     - assets/capsule.png
+    - assets/lock_animation.mp4
+    - assets/animation.gif
+    - assets/animations.gif
+    - assets/anima.gif
 
   fonts:
     - family: PlayfairDisplay

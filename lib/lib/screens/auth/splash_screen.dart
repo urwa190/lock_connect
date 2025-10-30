@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-// 1. IMPORT YOUR COLOR/THEME FILE
-import 'package:lock_connect/lib/theme/app_colors.dart';
-// 2. IMPORT THE CORRECT NEXT SCREEN (WelcomeScreen)
 import 'package:lock_connect/lib/screens/auth/welcome_screen.dart';
-
+import '../../theme/app_colors.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -13,63 +10,68 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-
   @override
   void initState() {
     super.initState();
-    // This function handles the delay before navigating
-    _navigateToNextScreen();
-  }
 
-  void _navigateToNextScreen() async {
-    // Wait for 3 seconds
-    await Future.delayed(const Duration(seconds: 3));
-
-    // Navigate to the Welcome Screen (the sign-up/login choice page)
-    if (mounted) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const WelcomeScreen()), // <- Navigates to WelcomeScreen
-      );
-    }
+    // Duration for splash screen
+    Future.delayed(const Duration(seconds: 3, milliseconds: 2350), () {
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+        );
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //backgroundColor: AppColors.primaryDarkBackground, // Deep Charcoal
-      body: Center(
-        // Added 'const' for performance
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // 💡 Custom Splash Logo: Retro Camera in a Lock (Animated Placeholder)
+      backgroundColor: Color(0xFF281637),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // GIF Animation
+              ClipRRect(
+                borderRadius: BorderRadius.circular(25),
+                child: Image.asset(
+                  'assets/anima.gif',
+                  width: 250,
+                  height: 250,
+                  fit: BoxFit.cover,
+                ),
+              ),
 
-            // Using const Icon and Text for better performance
-            const Icon(
-              Icons.lock_clock,
-              size: 100,
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'CAPSULE CONNECT',
-              style: TextStyle(
-                //color: AppColors.lightTextColor,
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
+              const SizedBox(height: 25),
+
+              // App Name
+              const Text(
+                'Rekindle',
+                style: TextStyle(
+                  color: AppColors.goldText,
+                  fontFamily: 'PlayfairDisplay',
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.5,
+                ),
               ),
-            ),
-            // Added the tagline to match the final design concept
-            const SizedBox(height: 8),
-            const Text(
-              'Share Moments. Unlock Memories',
-              style: TextStyle(
-                //color: AppColors.lightTextColor,
-                fontSize: 16,
+
+              const SizedBox(height: 10),
+
+              // Tagline
+              const Text(
+                'Share Moments. Unlock Memories.',
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 16,
+                  fontStyle: FontStyle.italic,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
     );
   }
 }

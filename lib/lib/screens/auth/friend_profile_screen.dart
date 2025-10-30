@@ -23,7 +23,8 @@ class FriendProfileScreen extends StatefulWidget {
 }
 
 class _FriendProfileScreenState extends State<FriendProfileScreen> {
-  int _selectedTab = 0;
+  // _selectedTab and its logic are no longer needed, but the widget structure remains.
+  // We'll hardcode the appearance of the selected tab directly into the UI.
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +40,8 @@ class _FriendProfileScreenState extends State<FriendProfileScreen> {
             color: AppColors.goldText,
           ),
         ),
-        centerTitle: true,
+        // CHANGE MADE HERE: Set centerTitle to false for left alignment
+        centerTitle: false,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Container(
@@ -62,7 +64,7 @@ class _FriendProfileScreenState extends State<FriendProfileScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: 30),
-                // 🔹 Centered DP
+                //Centered DP
                 const CircleAvatar(
                   radius: 50,
                   backgroundColor: Colors.white24,
@@ -81,7 +83,7 @@ class _FriendProfileScreenState extends State<FriendProfileScreen> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                // 🔹 Bio
+                //Bio
                 Text(
                   widget.bio,
                   textAlign: TextAlign.center,
@@ -92,7 +94,7 @@ class _FriendProfileScreenState extends State<FriendProfileScreen> {
                   ),
                 ),
                 const SizedBox(height: 25),
-                // 🔹 Stats Row
+                //Stats Row
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -102,7 +104,8 @@ class _FriendProfileScreenState extends State<FriendProfileScreen> {
                   ],
                 ),
                 const SizedBox(height: 25),
-                // 🔹 Tabs Row (Collections / Capsules / Threads)
+
+                // --- MODIFIED: Single Collections Heading Row ---
                 Container(
                   decoration: BoxDecoration(
                     color: Colors.black.withOpacity(0.2),
@@ -111,25 +114,17 @@ class _FriendProfileScreenState extends State<FriendProfileScreen> {
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisAlignment: MainAxisAlignment.center, // Center the single item
                     children: [
-                      _buildTabItem(0, Icons.collections, 'Collections'),
-                      _buildTabItem(1, Icons.all_inclusive, 'Capsules'),
-                      _buildTabItem(2, Icons.forum_outlined, 'Threads'),
+                      // Hardcoded appearance of the selected tab item
+                      _buildCollectionHeading(),
                     ],
                   ),
                 ),
                 const SizedBox(height: 20),
-                // 🔹 Tab Content
+                //Tab Content - Now always shows Collections
                 Expanded(
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    child: _selectedTab == 0
-                        ? _buildCollectionSection()
-                        : _selectedTab == 1
-                        ? _buildCapsulesSection()
-                        : _buildThreadsSection(),
-                  ),
+                  child: _buildCollectionSection(),
                 ),
               ],
             ),
@@ -139,88 +134,46 @@ class _FriendProfileScreenState extends State<FriendProfileScreen> {
     );
   }
 
-  // 🔹 Helper: Tabs with Icons
-  Widget _buildTabItem(int index, IconData icon, String label) {
-    final bool isSelected = _selectedTab == index;
-
-    return GestureDetector(
-      onTap: () {
-        setState(() => _selectedTab = index);
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-        decoration: isSelected
-            ? const BoxDecoration(
-          border: Border(
-            bottom: BorderSide(color: AppColors.sunsetOrange, width: 3),
-          ),
-        )
-            : null,
-        child: Row(
-          children: [
-            Icon(icon, color: isSelected ? AppColors.goldText : Colors.white70, size: 18),
-            const SizedBox(width: 5),
-            Text(
-              label,
-              style: TextStyle(
-                color: isSelected ? AppColors.goldText : AppColors.textHint,
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
-                fontFamily: 'PlayfairDisplay',
-              ),
-            ),
-          ],
+  // --- NEW: Helper for the single Collections heading ---
+  Widget _buildCollectionHeading() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      decoration: const BoxDecoration(
+        // Force the selected border style
+        border: Border(
+          bottom: BorderSide(color: AppColors.sunsetOrange, width: 3),
         ),
+      ),
+      child: Row(
+        children: const [
+          Icon(Icons.collections, color: AppColors.goldText, size: 18), // Selected icon color
+          SizedBox(width: 5),
+          Text(
+            'Collections', // The desired heading text
+            style: TextStyle(
+              color: AppColors.goldText, // Selected text color
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+              fontFamily: 'PlayfairDisplay',
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  // 🔹 Sections
-  // This section keeps the GridView for Collections
+  //Sections
   Widget _buildCollectionSection() {
     return GridView.count(
       crossAxisCount: 2,
       crossAxisSpacing: 15,
       mainAxisSpacing: 15,
-      // Title set to 'Shared Collection' for friend's view
       children: List.generate(4, (index) => const CollectionBox(title: 'Food')),
-    );
-  }
-
-  // MODIFIED: Capsules section shows placeholder text
-  Widget _buildCapsulesSection() {
-    return const Center(
-      child: Text(
-        'Capsules are private or empty for this user.',
-        key: ValueKey('friend-capsules-empty'),
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          color: AppColors.textHint,
-          fontSize: 18,
-          fontFamily: 'PlayfairDisplay',
-        ),
-      ),
-    );
-  }
-
-  // MODIFIED: Threads section shows placeholder text
-  Widget _buildThreadsSection() {
-    return const Center(
-      child: Text(
-        'No recent Threads to display.',
-        key: ValueKey('friend-threads-empty'),
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          color: AppColors.textHint,
-          fontSize: 18,
-          fontFamily: 'PlayfairDisplay',
-        ),
-      ),
     );
   }
 }
 
-// 🔸 Profile Stat Widget
+//Profile Stat Widget
 class _ProfileStat extends StatelessWidget {
   final String label;
   final String value;
@@ -265,7 +218,7 @@ class _ProfileStat extends StatelessWidget {
   }
 }
 
-// 🔸 Collection Box Widget
+//Collection Box Widget
 class CollectionBox extends StatelessWidget {
   final String title;
 

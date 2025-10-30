@@ -59,7 +59,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                   const SizedBox(height: 25),
 
-                  // 🔹 Profile Picture
+                  //Profile Picture
                   Stack(
                     children: [
                       const CircleAvatar(
@@ -75,9 +75,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             // Show small feedback container
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text("Will lead to gallery"),
+                                content: Text("Will lead to gallery",
+                                style: TextStyle(color: Colors.white,
+                                  fontFamily: "Roboto"
+                                )),
                                 duration: Duration(seconds: 1),
-                                backgroundColor: AppColors.sunsetOrange,
+                                backgroundColor: AppColors.sunsetPurple,
                                 behavior: SnackBarBehavior.floating,
                                 margin: EdgeInsets.symmetric(horizontal: 50, vertical: 10),
                                 shape: RoundedRectangleBorder(
@@ -99,7 +102,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       ),
                     ],
                   ),
-                  // 🔹 Name Field
+                  //Name Field
                   TextField(
                     controller: _nameController,
                     style: const TextStyle(color: Colors.white),
@@ -116,7 +119,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                   const SizedBox(height: 20),
 
-                  // 🔹 Bio Field
+                  //Bio Field
                   TextField(
                     controller: _bioController,
                     maxLines: 3,
@@ -134,7 +137,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                   const SizedBox(height: 30),
 
-                  // 🔹 Save Button
+                  //Save Button
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -163,7 +166,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
                   const SizedBox(height: 15),
 
-                  // 🔙 Back Button
+                  //Back Button
                   TextButton(
                     onPressed: () {
                       Navigator.pop(context);

@@ -58,7 +58,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ),
                   const SizedBox(height: 25),
 
-                  // 👤 Username
+                  // Username
                   TextField(
                     decoration: InputDecoration(
                       prefixIcon:
@@ -78,7 +78,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ),
                   const SizedBox(height: 15),
 
-                  // 🔒 Old Password
+                  // Old Password
                   TextField(
                     obscureText: _obscureOldPassword,
                     decoration: InputDecoration(
@@ -112,7 +112,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ),
                   const SizedBox(height: 15),
 
-                  // 🔑 New Password
+                  //New Password
                   TextField(
                     obscureText: _obscureNewPassword,
                     decoration: InputDecoration(
@@ -145,7 +145,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ),
                   const SizedBox(height: 15),
 
-                  // ✅ Confirm Password
+                  //Confirm Password
                   TextField(
                     obscureText: _obscureConfirmPassword,
                     decoration: InputDecoration(
@@ -179,7 +179,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
                   const SizedBox(height: 25),
 
-                  // 🔘 Reset Button
+                  //Reset Button
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -206,7 +206,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
                   const SizedBox(height: 15),
 
-                  // 🔙 Back to Login
+                  //Back to Login
                   TextButton(
                     onPressed: () {
                       Navigator.pop(context);
