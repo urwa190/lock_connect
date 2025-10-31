@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-  class AppColors {
+class AppColors {
   // Sunset Signature Palette
   static const Color sunsetPurple = Color(0xFF3B1F4F);       // Deep purple
   static const Color sunsetPink = Color(0xFF9B477A);         // Warm magenta-pink
@@ -38,7 +38,7 @@ import 'package:flutter/material.dart';
 
 
 
-  }
+}
 
 
 
