@@ -7,14 +7,14 @@ import 'thread_creation_screen.dart';
 import '../../theme/AppColors.dart';
 
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class HomeScreens extends StatefulWidget {
+  const HomeScreens({Key? key}) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<HomeScreens> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreens> {
   final List<PostModel> posts = mockPosts;
   int _selectedIndex = 0;
 
@@ -173,27 +173,27 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: SafeArea(child: _buildBody()),
-        bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: Colors.black.withOpacity(0.6),
-          selectedItemColor: Colors.white,
-          unselectedItemColor: Colors.white70,
-          currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Posts',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.forum),
-              label: 'Threads',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.create),
-              label: 'Create',
-            ),
-          ],
-        ),
+        // bottomNavigationBar: BottomNavigationBar(
+        //   backgroundColor: Colors.black.withOpacity(0.6),
+        //   selectedItemColor: Colors.white,
+        //   unselectedItemColor: Colors.white70,
+        //   currentIndex: _selectedIndex,
+        //   onTap: _onItemTapped,
+        //   items: const [
+        //     BottomNavigationBarItem(
+        //       icon: Icon(Icons.home),
+        //       label: 'Posts',
+        //     ),
+        //     BottomNavigationBarItem(
+        //       icon: Icon(Icons.forum),
+        //       label: 'Threads',
+        //     ),
+        //     BottomNavigationBarItem(
+        //       icon: Icon(Icons.create),
+        //       label: 'Create',
+        //     ),
+        //   ],
+        // ),
       ),
     );
   }

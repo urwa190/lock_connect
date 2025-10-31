@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:lock_connect/screens/threads_screen.dart';
 import '../../../features/capsules/screens/capsule_home_screen.dart';
 import '../../theme/app_colors.dart';
 import 'profile_screen.dart';
+import 'package:lock_connect/utils/post_menu.dart';
+import  'package:lock_connect/screens/home_screens.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -13,48 +17,54 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
-  // Screens for each tab
+// ✅ Only include real screens — exclude Upload
   final List<Widget> _screens = [
-    const Center(
-      child: Text(
-        'Welcome to Rekindl Home!',
-        style: TextStyle(
-          color: AppColors.goldText,
-          fontSize: 24,
-          fontFamily: 'PlayfairDisplay',
-        ),
-      ),
-    ),
-    const CapsuleHomeScreen(),
-
-    const Center(
-      child: Text(
-        'Create Something New!',
-        style: TextStyle(
-          color: AppColors.goldText,
-          fontSize: 24,
-          fontFamily: 'PlayfairDisplay',
-        ),
-      ),
-    ),
-    const Center(
-      child: Text(
-        'Threads Screen',
-        style: TextStyle(
-          color: AppColors.goldText,
-          fontSize: 24,
-          fontFamily: 'PlayfairDisplay',
-        ),
-      ),
-    ),
-    const ProfileScreen(), //last one for Profile
+    const HomeScreens(),         // 0
+    const CapsuleHomeScreen(),   // 1
+    const ThreadsScreen(),       // 2 (will map from index 3)
+    const ProfileScreen(),       // 3 (will map from index 4)
   ];
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    if (index == 2) {
+      // 🔹 Upload button tapped → call upload function/modal
+      showCreatePostMenu(context);
+    } else {
+      setState(() {
+        // 🔹 Adjust index mapping because Upload isn't in _screens
+        if (index > 2) {
+          _selectedIndex = index - 1; // Shift after upload
+        } else {
+          _selectedIndex = index;
+        }
+      });
+    }
   }
+
+
+  // // Screens for each tab (excluding Create because it shows modal)
+  // final List<Widget> _screens = [
+  //   const Center(child: Text('Home Content', style: TextStyle(color: Colors.white))),
+  //   const HomeScreens(),
+  //   const CapsuleHomeScreen(),
+  //   const ThreadsScreen(),
+  //   const ProfileScreen(),
+  // ];
+  //
+  // void _onItemTapped(int index) {
+  //   if (index == 3) {
+  //     // 👇 when Create button tapped, open Post Menu instead of switching screen
+  //     showCreatePostMenu(context);
+  //   } else {
+  //     setState(() {
+  //       // Adjusted index mapping (because Create is skipped)
+  //       _selectedIndex = index < 2 ? index : index - 1;
+  //     });
+  //   }
+  // }
+
+  // Screens for each tab (excluding Create because it shows modal)
+
 
   @override
   Widget build(BuildContext context) {
@@ -74,39 +84,55 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         child: _screens[_selectedIndex],
       ),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   currentIndex: _selectedIndex,
+      //   onTap: _onItemTapped,
+      //   backgroundColor: Colors.black.withOpacity(0.5),
+      //   type: BottomNavigationBarType.fixed,
+      //   selectedItemColor: AppColors.sunsetBlue,
+      //   unselectedItemColor: Colors.white70,
+      //   selectedFontSize: 13,
+      //   unselectedFontSize: 12,
+      //   showUnselectedLabels: true,
+      //   items: const [
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.home_filled),
+      //       label: 'Home',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.healing),
+      //       label: 'Capsules',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.add_box_rounded),
+      //       label: 'Create',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.forum),
+      //       label: 'Threads',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.person),
+      //       label: 'Profile',
+      //     ),
+      //   ],
+      // ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        backgroundColor: Colors.black.withOpacity(0.5),
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: AppColors.sunsetBlue,
-        unselectedItemColor: Colors.white70,
-        selectedFontSize: 13,
-        unselectedFontSize: 12,
-        showUnselectedLabels: true,
+        backgroundColor: Colors.black,
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.grey,
+        currentIndex: _selectedIndex < 2 ? _selectedIndex : _selectedIndex + 1, // fix highlighting
+        onTap: _onItemTapped,
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_filled),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.healing),// Capsules buttone
-            label: 'Capsules',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add_box_rounded), //Create Button
-            label: 'Create',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.forum), // Threads
-            label: 'Threads',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile', //for profile
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.public), label: 'Capsule'),
+          BottomNavigationBarItem(icon: Icon(Icons.add_box_outlined), label: 'Upload'),
+          BottomNavigationBarItem(icon: Icon(Icons.forum), label: 'Threads'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
+
     );
   }
 }

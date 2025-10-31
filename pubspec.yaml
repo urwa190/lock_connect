@@ -25,7 +25,12 @@ flutter:
   assets:
     - assets/images/  # <-- Registering the IMAGES folder
     - assets/videos/
-    - assets/images/
+    - assets/logo.png
+    - assets/capsule.png
+    - assets/lock_animation.mp4
+    - assets/animation.gif
+    - assets/anima.gif
+    - assets/images/capsule.png
 
 
   fonts:
