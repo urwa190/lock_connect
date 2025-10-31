@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../screens/thread_creation_screen.dart'; // screen for writing a thread
-import '../theme/app_colors.dart';        // color definitions
+import '../theme/AppColors.dart';        // color definitions
 
 //----------------------------Create Post Menu---------------------------------
 void showCreatePostMenu(BuildContext context) {

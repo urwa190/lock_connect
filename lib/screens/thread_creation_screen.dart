@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart'; // Gradient colors
 import 'threads_screen.dart';     // Navigation target
 import 'notifications_screen.dart';   // For notification navigation
+import '../theme/AppColors.dart';             // Custom color palette
 
 class ThreadCreationScreen extends StatefulWidget {
   const ThreadCreationScreen({super.key});

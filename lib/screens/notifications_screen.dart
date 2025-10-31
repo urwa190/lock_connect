@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../theme/app_colors.dart'; // color definitions
+import '../theme/AppColors.dart'; // color definitions
 
 class NotificationsScreen extends StatefulWidget {
   final String userName; //  receives username from HomeScreen

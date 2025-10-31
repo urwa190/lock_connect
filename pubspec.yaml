@@ -25,6 +25,7 @@ flutter:
   assets:
     - assets/images/  # <-- Registering the IMAGES folder
     - assets/videos/
+    - assets/images/
 
 
   fonts:

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/post_model.dart';             // PostModel definition
-import '../theme/app_colors.dart';             // Custom color palette
+import '../theme/AppColors.dart';             // Custom color palette
 import '../widgets/local_video_player.dart';   // Widget to play local videos
 import '../widgets/local_video_player.dart';
 

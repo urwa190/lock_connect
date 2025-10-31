@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import '../widgets/post_card.dart';      // reusable post layout
 import '../models/post_model.dart';      // mockPosts and PostModel
-import '../theme/app_colors.dart';       // color definitions
 import 'notifications_screen.dart';      // navigation target
+import '../theme/AppColors.dart';             // Custom color palette
+
 
 class ThreadsScreen extends StatelessWidget {
   const ThreadsScreen({super.key});

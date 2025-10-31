@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:lock_connect/theme/app_colors.dart';
 import '../widgets/post_card.dart';
 import '../models/post_model.dart';
 import 'notifications_screen.dart';
 import 'threads_screen.dart';
 import 'thread_creation_screen.dart';
+import '../../theme/AppColors.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
