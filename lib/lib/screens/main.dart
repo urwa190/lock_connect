@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Capsule Connect',
       debugShowCheckedModeBanner: false,
-      //SET SPLASH SCREEN AS THE HOME WIDGET
+      // SET SPLASH SCREEN AS THE HOME WIDGET
       home: const SplashScreen(),
     );
   }

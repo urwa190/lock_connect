@@ -1,3 +1,14 @@
+// Project-level build.gradle (often named build.gradle or build.gradle.kts)
+
+// 1. ADD THE PLUGINS BLOCK HERE:
+plugins {
+    // This line registers the Google Services plugin,
+    // making it available for modules to use later.
+    id("com.android.application") version "8.1.0" apply false // Example Android plugin
+    id("com.google.gms.google-services") version "4.4.4" apply false // <--- ADD IT HERE
+}
+
+// 2. YOUR EXISTING REPOSITORIES BLOCK GOES NEXT:
 allprojects {
     repositories {
         google()

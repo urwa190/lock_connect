@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "376637785492",
+    "project_id": "lock-connect",
+    "storage_bucket": "lock-connect.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:376637785492:android:27f7ca3fdef52e9bb8fb81",
+        "android_client_info": {
+          "package_name": "com.example.lock_connect"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACT4ZRpLmEVGkAeL8Yzug4Yph_a76jP1Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

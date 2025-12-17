@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:lock_connect/core/constants/colors.dart';
 import 'package:lock_connect/core/constants/app_colors.dart'; // Import AppColors for gradient/gold
 
-// --- DARK MODE OVERRIDES (Ensure consistency) ---
 const Color kAppBackground = Color(0xFF121212);
 const Color kAppBarForeground = Colors.white;
 const Color kDarkCardBackground = Color(0xFF1E1E1E);
@@ -21,7 +20,7 @@ class CapsuleDetailScreen extends StatelessWidget {
     required this.capsuleTitle,
     required this.creationDate,
     required this.unlocksIn,
-    // Increased mock media for better scroll view demonstration
+
     this.mockMediaUrls = const ['p1', 'p2', 'p3', 'p4', 'p5'],
     // Simulated 150-word note
     this.mockNotes = 'This capsule was opened to reveal memories from our incredible trip! We included five photos and a short video summarizing the best moments. This note serves as the official caption, documenting our thoughts and feelings upon seeing this content again after so long. It\'s truly amazing how quickly time passes, but these digitized moments keep the past vibrant and close. We hope future versions of ourselves continue to add to this archive of friendship and shared experiences!',
