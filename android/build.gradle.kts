@@ -1,38 +1,30 @@
-// Project-level build.gradle (often named build.gradle or build.gradle.kts)
-
-// 1. ADD THE PLUGINS BLOCK HERE:
-plugins {
-    // This line registers the Google Services plugin, 
-    // making it available for modules to use later.
-    id("com.android.application") apply false // <--- SYNCHRONIZED VERSION
-    id("com.google.gms.google-services") version "4.4.4" apply false // <--- ADD IT HERE
+// android/build.gradle.kts
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        // This is the bridge for Firebase (Google Services)
+        classpath("com.google.gms:google-services:4.4.1")
+    }
 }
 
-// 2. YOUR EXISTING REPOSITORIES BLOCK GOES NEXT:
 allprojects {
     repositories {
         google()
         mavenCentral()
-        maven {
-            url = uri("https://maven.aliyun.com/repository/google")
-        }
     }
 }
 
-val newBuildDir: Directory =
-    rootProject.layout.buildDirectory
-        .dir("../../build")
-        .get()
-rootProject.layout.buildDirectory.value(newBuildDir)
-
+rootProject.buildDir = file("../build")
 subprojects {
-    val newSubprojectBuildDir: Directory = newBuildDir.dir(project.name)
-    project.layout.buildDirectory.value(newSubprojectBuildDir)
+    project.buildDir = file("${rootProject.buildDir}/${project.name}")
 }
 subprojects {
     project.evaluationDependsOn(":app")
 }
 
 tasks.register<Delete>("clean") {
-    delete(rootProject.layout.buildDirectory)
+    delete(rootProject.buildDir)
 }

@@ -12,20 +12,7 @@
           "package_name": "com.example.lock_connect"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "376637785492-tlft29arge70jh9764120ct489n41nm1.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.lock_connect",
-            "certificate_hash": "666d0a5b238ea23449464131e6b50853077bbe50"
-          }
-        },
-        {
-          "client_id": "376637785492-a0qn2urghup5edavkrfn9dpajmgcemot.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
           "current_key": "AIzaSyACT4ZRpLmEVGkAeL8Yzug4Yph_a76jP1Y"
@@ -33,12 +20,7 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "376637785492-a0qn2urghup5edavkrfn9dpajmgcemot.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }
