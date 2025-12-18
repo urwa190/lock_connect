@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
-import '../widgets/post_card.dart';      // reusable post layout
-import '../models/post_model.dart';      // mockPosts and PostModel
-import 'notifications_screen.dart';      // navigation target
-import '../theme/AppColors.dart';             // Custom color palette
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../widgets/post_card.dart';
+import '../models/post_model.dart';
+import '../theme/AppColors.dart';
 
 class ThreadsScreen extends StatelessWidget {
-  const ThreadsScreen({super.key});
+  const ThreadsScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final List<PostModel> threadPosts = mockPosts.where((post) => post.isThread).toList();
-
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
@@ -27,40 +24,65 @@ class ThreadsScreen extends StatelessWidget {
       ),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        body: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AppBar(
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                title:const Text( "Threads",
-                  style: TextStyle(fontFamily:'PlayfairDisplay', color:AppColors.goldText,fontSize: 24, fontWeight: FontWeight.bold ),
-                ), actions: [
-                IconButton(
-                  icon: const Icon(Icons.notifications, color: Colors.white),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const NotificationsScreen(userName: 'Sarah'),
-                      ),
-                    );
-                  },
-                ),
-              ],
-              ),
-
-              Expanded(
-                child: ListView.builder(
-                  itemCount: threadPosts.length,
-                  itemBuilder: (context, index) {
-                    return PostCard(post: threadPosts[index]);
-                  },
-                ),
-              ),
-            ],
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          title: const Text(
+            "Community Threads",
+            style: TextStyle(
+              fontFamily: 'PlayfairDisplay',
+              color: AppColors.goldText,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
           ),
+        ),
+        body: StreamBuilder<QuerySnapshot>(
+          // Filters the database to show only text threads
+          stream: FirebaseFirestore.instance
+              .collection('posts')
+              .where('isThread', isEqualTo: true)
+              .orderBy('timestamp', descending: true)
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator(color: AppColors.goldText));
+            }
+
+            if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+              return const Center(
+                child: Text(
+                  "No threads yet.",
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+              );
+            }
+
+            final threadDocs = snapshot.data!.docs;
+
+            return ListView.builder(
+              itemCount: threadDocs.length,
+              itemBuilder: (context, index) {
+                final doc = threadDocs[index];
+                final data = doc.data() as Map<String, dynamic>;
+
+                final threadPost = PostModel(
+                  id: doc.id,
+                  authorName: data['authorName'] ?? 'Member',
+                  authorAvatarUrl: data['authorAvatarUrl'] ?? 'assets/logo.png',
+                  caption: data['caption'] ?? '',
+                  mediaUrl: '',
+                  timestamp: (data['timestamp'] as Timestamp?)?.toDate() ?? DateTime.now(),
+                  isThread: true,
+                  isVideo: false,
+                  // Fixed: Added required videoPath parameter
+                  videoPath: '',
+                );
+
+                return PostCard(post: threadPost);
+              },
+            );
+          },
         ),
       ),
     );

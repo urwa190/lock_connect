@@ -10,8 +10,14 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  http: ^1.2.0      # for Cloudinary
+  mockito: ^5.4.4
+  firebase_auth: ^5.4.4
+  cloud_firestore: ^5.6.1
+  firebase_core: ^3.10.1
   cupertino_icons: ^1.0.8
   video_player: ^2.7.2
+  image_picker: ^1.0.7
 
 dev_dependencies:
   flutter_test:
