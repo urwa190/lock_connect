@@ -142,6 +142,8 @@
 import 'package:flutter/material.dart';
 import 'package:lock_connect/screens/threads_screen.dart';
 import 'package:lock_connect/features/capsules/screens/capsule_home_screen.dart';
+import 'package:lock_connect/features/capsules/services/capsule_service.dart';
+import 'package:lock_connect/features/capsules/services/cloudinary_upload.dart';
 import 'package:lock_connect/utils/post_menu.dart';
 import 'package:lock_connect/screens/home_screens.dart';
 import '../../theme/app_colors.dart';
@@ -157,10 +159,19 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
+  // Create a single instance of CapsuleService
+  // Set your Cloudinary config here
+  final _capsuleService = CapsuleService(
+    uploader: CloudinaryUploader(
+      cloudName: 'YOUR_CLOUD_NAME',
+      uploadPreset: 'YOUR_UNSIGNED_PRESET',
+    ),
+  );
+
   // Screens for tabs (Upload is not a screen; it opens the modal)
-  final List<Widget> _screens = [
+  late final List<Widget> _screens = [
     const HomeScreens(),       // index 0
-    CapsuleHomeScreen(),       // index 1 (non-const; has service)
+    CapsuleHomeScreen(capsuleService: _capsuleService),  // index 1
     const ThreadsScreen(),     // index 2 (mapped from nav index 3)
     const ProfileScreen(),     // index 3 (mapped from nav index 4)
   ];

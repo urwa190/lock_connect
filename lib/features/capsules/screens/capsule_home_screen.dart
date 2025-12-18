@@ -416,15 +416,12 @@ import 'create_capsule_screen.dart';
 import '../widgets/visual_capsule_card.dart';
 
 class CapsuleHomeScreen extends StatelessWidget {
-  CapsuleHomeScreen({super.key});
+  final CapsuleService capsuleService;
 
-  // Set your Cloudinary config here
-  final _capsuleService = CapsuleService(
-    uploader: CloudinaryUploader(
-      cloudName: 'YOUR_CLOUD_NAME',
-      uploadPreset: 'YOUR_UNSIGNED_PRESET',
-    ),
-  );
+  const CapsuleHomeScreen({
+    super.key,
+    required this.capsuleService,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -433,7 +430,7 @@ class CapsuleHomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Capsules')),
       body: StreamBuilder<List<Capsule>>(
-        stream: _capsuleService.streamCapsulesForUser(uid),
+        stream: capsuleService.streamCapsulesForUser(uid),
         builder: (context, snap) {
           if (snap.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -453,7 +450,7 @@ class CapsuleHomeScreen extends StatelessWidget {
                 MaterialPageRoute(
                   builder: (_) => CapsuleDetailScreen(
                     capsuleId: capsules[i].id,
-                    capsuleService: _capsuleService,
+                    capsuleService: capsuleService,
                   ),
                 ),
               ),
@@ -466,7 +463,7 @@ class CapsuleHomeScreen extends StatelessWidget {
         onPressed: () => Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => CreateCapsuleScreen(capsuleService: _capsuleService),
+            builder: (_) => CreateCapsuleScreen(capsuleService: capsuleService),
           ),
         ),
         child: const Icon(Icons.add),
