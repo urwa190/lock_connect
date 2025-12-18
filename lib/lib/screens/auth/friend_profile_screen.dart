@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../../theme/app_colors.dart';
 import 'friends_screen.dart';
@@ -5,17 +6,17 @@ import 'friends_screen.dart';
 class FriendProfileScreen extends StatefulWidget {
   final String name;
   final String bio;
+  final String friendId;
   final int threads;
   final int capsules;
-  final int friendsCount;
 
   const FriendProfileScreen({
     super.key,
     required this.name,
     required this.bio,
+    required this.friendId,
     this.threads = 0,
     this.capsules = 0,
-    this.friendsCount = 0,
   });
 
   @override
@@ -23,8 +24,7 @@ class FriendProfileScreen extends StatefulWidget {
 }
 
 class _FriendProfileScreenState extends State<FriendProfileScreen> {
-  // _selectedTab and its logic are no longer needed, but the widget structure remains.
-  // We'll hardcode the appearance of the selected tab directly into the UI.
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -32,114 +32,59 @@ class _FriendProfileScreenState extends State<FriendProfileScreen> {
       backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: AppColors.sunsetBlue,
-        title: Text(
-          widget.name,
-          style: const TextStyle(
-            fontFamily: 'PlayfairDisplay',
-            fontWeight: FontWeight.bold,
-            color: AppColors.goldText,
-          ),
-        ),
-        // CHANGE MADE HERE: Set centerTitle to false for left alignment
+        title: Text(widget.name, style: const TextStyle(fontFamily: 'PlayfairDisplay', fontWeight: FontWeight.bold, color: AppColors.goldText)),
         centerTitle: false,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              AppColors.sunsetBlue,
-              AppColors.sunsetPurple,
-              AppColors.sunsetPink,
-              AppColors.sunsetOrange,
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            colors: [AppColors.sunsetBlue, AppColors.sunsetPurple, AppColors.sunsetPink, AppColors.sunsetOrange],
+            begin: Alignment.topCenter, end: Alignment.bottomCenter,
           ),
         ),
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: 30),
-                //Centered DP
                 CircleAvatar(
                   radius: 50,
                   backgroundColor: Colors.lightGreen,
-                  child: Text(
-                    widget.name[0].toUpperCase(),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'PlayfairDisplay',
-                    ),
-                  ),
+                  child: Text(widget.name.isNotEmpty ? widget.name[0].toUpperCase() : "?",
+                      style: const TextStyle(color: Colors.white, fontSize: 40, fontWeight: FontWeight.bold, fontFamily: 'PlayfairDisplay')),
                 ),
                 const SizedBox(height: 20),
-                // 🔹 Name
-                Text(
-                  widget.name,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontFamily: 'PlayfairDisplay',
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.goldText,
-                  ),
-                ),
+                Text(widget.name, textAlign: TextAlign.center, style: const TextStyle(fontFamily: 'PlayfairDisplay', fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.goldText)),
                 const SizedBox(height: 8),
-                //Bio
-                Text(
-                  widget.bio,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontFamily: 'PlayfairDisplay',
-                    fontSize: 16,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
+                Text(widget.bio, textAlign: TextAlign.center, style: const TextStyle(fontFamily: 'PlayfairDisplay', fontSize: 16, color: AppColors.textPrimary)),
                 const SizedBox(height: 25),
-                //Stats Row
-                // Stats Row Wrapped in Styled Container
+
+                // --- STATS ROW ---
                 Container(
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.white24, width: 1),
-                  ),
+                  decoration: BoxDecoration(color: Colors.black.withOpacity(0.2), borderRadius: BorderRadius.circular(20), border: Border.all(color: Colors.white24, width: 1)),
                   padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       _ProfileStat(label: 'Threads', value: widget.threads.toString()),
                       _ProfileStat(label: 'Capsules', value: widget.capsules.toString()),
-                      _ProfileStat(label: 'Friends', value: widget.friendsCount.toString()),
+
+                      // 🔗 REAL-TIME FRIEND COUNT
+                      StreamBuilder<QuerySnapshot>(
+                        stream: _firestore.collection('users').doc(widget.friendId).collection('friends').snapshots(),
+                        builder: (context, snapshot) {
+                          String count = snapshot.hasData ? snapshot.data!.docs.length.toString() : "0";
+                          return _ProfileStat(label: 'Friends', value: count);
+                        },
+                      ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 25),
-
-                // --- MODIFIED: Single Collections Heading Row ---
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.white24, width: 1),
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center, // Center the single item
-                    children: [
-                      // Hardcoded appearance of the selected tab item
-                      _buildCollectionHeading(),
-                    ],
-                  ),
-                ),
+                _buildCollectionHeading(),
                 const SizedBox(height: 20),
-                //Tab Content - Now always shows Collections
                 Expanded(
                   child: _buildCollectionSection(),
                 ),
@@ -151,35 +96,27 @@ class _FriendProfileScreenState extends State<FriendProfileScreen> {
     );
   }
 
-  //
   Widget _buildCollectionHeading() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-      decoration: const BoxDecoration(
-        // Force the selected border style
-        border: Border(
-          bottom: BorderSide(color: AppColors.sunsetOrange, width: 3),
-        ),
-      ),
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      decoration: BoxDecoration(color: Colors.black.withOpacity(0.2), borderRadius: BorderRadius.circular(20), border: Border.all(color: Colors.white24, width: 1)),
       child: Row(
-        children: const [
-          Icon(Icons.collections, color: AppColors.goldText, size: 18), // Selected icon color
-          SizedBox(width: 5),
-          Text(
-            'Collections',
-            style: TextStyle(
-              color: AppColors.goldText, // Selected text color
-              fontWeight: FontWeight.bold,
-              fontSize: 14,
-              fontFamily: 'PlayfairDisplay',
-            ),
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: const BoxDecoration(border: Border(bottom: BorderSide(color: AppColors.sunsetOrange, width: 3))),
+            child: Row(children: const [
+              Icon(Icons.collections, color: AppColors.goldText, size: 18),
+              SizedBox(width: 5),
+              Text('Collections', style: TextStyle(color: AppColors.goldText, fontWeight: FontWeight.bold, fontFamily: 'PlayfairDisplay')),
+            ]),
           ),
         ],
       ),
     );
   }
 
-  //Sections
   Widget _buildCollectionSection() {
     return GridView.count(
       crossAxisCount: 2,
@@ -188,9 +125,10 @@ class _FriendProfileScreenState extends State<FriendProfileScreen> {
       children: List.generate(4, (index) => const CollectionBox(title: 'Food')),
     );
   }
-}
+} // <--- End of State class
 
-//Profile Stat Widget
+// --- 🧱 CUSTOM WIDGETS (Defined outside the class) ---
+
 class _ProfileStat extends StatelessWidget {
   final String label;
   final String value;
@@ -235,10 +173,8 @@ class _ProfileStat extends StatelessWidget {
   }
 }
 
-//Collection Box Widget
 class CollectionBox extends StatelessWidget {
   final String title;
-
   const CollectionBox({required this.title, super.key});
 
   @override

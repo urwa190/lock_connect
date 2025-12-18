@@ -12,6 +12,15 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.8
   video_player: ^2.7.2
+  image_picker: ^1.0.7
+  gal: ^1.1.1
+  firebase_storage: ^11.6.0
+  url_launcher: ^6.2.5
+  # -------------------------------------
+  firebase_core: ^2.27.1      # Core services
+  firebase_auth: ^4.17.9      # Authentication (Login/Signup)
+  cloud_firestore: ^4.15.9    # Database (User Profiles, Capsules)
+  http: ^1.6.0
 
 dev_dependencies:
   flutter_test:

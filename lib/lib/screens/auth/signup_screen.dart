@@ -1,10 +1,92 @@
 import 'package:flutter/material.dart';
-import '../../theme/app_colors.dart';
+import '../../../core/constants/app_colors.dart';
+import '../../backend/services/auth_service.dart';
 import 'home_screen.dart';
 import 'login_screen.dart';
 
-class SignupScreen extends StatelessWidget {
+class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
+
+  @override
+  State<SignupScreen> createState() => _SignupScreenState();
+}
+
+class _SignupScreenState extends State<SignupScreen> {
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+  final AuthService _authService = AuthService();
+
+  bool _isLoading = false;
+  bool _obscurePassword = true; // State for password eye toggle
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _emailController.dispose();
+    _phoneController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  // Improved Empty Field Check & Validation
+  void _handleSignUp() async {
+    String username = _usernameController.text.trim();
+    String email = _emailController.text.trim();
+    String phone = _phoneController.text.trim();
+    String password = _passwordController.text.trim();
+    String confirmPass = _confirmPasswordController.text.trim();
+
+    // 1. Check for empty fields (Mandatory check)
+    if (username.isEmpty || email.isEmpty || phone.isEmpty || password.isEmpty || confirmPass.isEmpty) {
+      _showMessage('All fields marked with * are mandatory.', isError: true);
+      return;
+    }
+
+    // 2. Password Match Check
+    if (password != confirmPass) {
+      _showMessage('Passwords do not match.', isError: true);
+      return;
+    }
+
+    // 3. Password Length Check
+    if (password.length < 7) {
+      _showMessage('Password must be at least 7 characters.', isError: true);
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    try {
+      await _authService.signUp(username, email, password, phone);
+      if (mounted) {
+        _showMessage('Account created successfully!');
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+              (
+              route) => false,
+        );
+      }
+    } catch (e) {
+      if (mounted) _showMessage(e.toString().replaceFirst('Exception: ', ''), isError: true);
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  void _showMessage(String message, {bool isError = false}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message, style: const TextStyle(fontFamily: 'PlayfairDisplay')),
+        backgroundColor: isError ? AppColors.sunsetPurple : AppColors.sunsetOrange,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -12,14 +94,8 @@ class SignupScreen extends StatelessWidget {
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              AppColors.sunsetBlue,
-              AppColors.sunsetPurple,
-              AppColors.sunsetPink,
-              AppColors.sunsetOrange,
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            colors: [AppColors.sunsetBlue, AppColors.sunsetPurple, AppColors.sunsetPink, AppColors.sunsetOrange],
+            begin: Alignment.topCenter, end: Alignment.bottomCenter,
           ),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -27,114 +103,50 @@ class SignupScreen extends StatelessWidget {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                //Title
-                const Text(
-                  'Join Rekindl',
-                  style: TextStyle(
-                    fontSize: 36,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'PlayfairDisplay',
-                    color: AppColors.goldText,
-                  ),
-                ),
-                const SizedBox(height: 10),
-
-                const Text(
-                  'Create your account and start your journey',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontFamily: 'PlayfairDisplay',
-                    color: Colors.white70,
-                  ),
-                ),
+                const SizedBox(height: 60),
+                const Text('Join Rekindl', style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, fontFamily: 'PlayfairDisplay', color: AppColors.goldText)),
                 const SizedBox(height: 40),
-
-                //Form Container
                 Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(25),
-                    border: Border.all(color: Colors.white30, width: 1),
-                  ),
+                  decoration: BoxDecoration(color: Colors.white.withOpacity(0.15), borderRadius: BorderRadius.circular(25), border: Border.all(color: Colors.white30)),
                   padding: const EdgeInsets.all(20),
                   child: Column(
                     children: [
-                      _buildTextField(Icons.person, 'Username'),
+                      // Using "*" in hints to show they are mandatory
+                      _buildTextField(Icons.person, 'Username *', _usernameController),
                       const SizedBox(height: 16),
-                      _buildTextField(Icons.email, 'Email'),
+                      _buildTextField(Icons.email, 'Email * (e.g. name@rekindl.com)', _emailController),
                       const SizedBox(height: 16),
-                      _buildTextField(Icons.lock, 'Password', obscureText: true),
+                      _buildTextField(Icons.phone, 'Phone Number *', _phoneController),
                       const SizedBox(height: 16),
-                      _buildTextField(Icons.lock_outline, 'Confirm Password', obscureText: true),
+                      // Password with Eye Toggle
+                      _buildTextField(Icons.lock, 'Password *', _passwordController, isPassword: true),
+                      const SizedBox(height: 16),
+                      _buildTextField(Icons.lock_outline, 'Confirm Password *', _confirmPasswordController, isPassword: true),
                       const SizedBox(height: 28),
 
-                      //Signup Button
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(builder: (context) => const HomeScreen()),
-                            );
-                          },
+                          onPressed: _isLoading ? null : _handleSignUp,
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
-                            ),
                             backgroundColor: AppColors.sunsetOrange,
-                            elevation: 8,
-                            shadowColor: AppColors.sunsetOrange.withOpacity(0.6),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
                           ),
-                          child: const Text(
-                            'Get Started',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'PlayfairDisplay',
-                              color: AppColors.textPrimary,
-                            ),
-                          ),
+                          child: _isLoading
+                              ? const CircularProgressIndicator(color: Colors.white)
+                              : const Text('Get Started', style: TextStyle(fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold)),
                         ),
                       ),
                     ],
                   ),
                 ),
-
                 const SizedBox(height: 25),
-
-                //Login Link
                 GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const LoginScreen()),
-                    );
-                  },
-                  child: const Text.rich(
-                    TextSpan(
-                      text: 'Already have an account? ',
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Colors.white,
-                        fontFamily: 'PlayfairDisplay',
-                      ),
-                      children: [
-                        TextSpan(
-                          text: 'Log in',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.goldText,
-                            fontFamily: 'PlayfairDisplay',
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  onTap: () => Navigator.pop(context),
+                  child: const Text.rich(TextSpan(text: 'Already have an account? ', style: TextStyle(color: Colors.white), children: [TextSpan(text: 'Log in', style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.goldText))])),
                 ),
+                const SizedBox(height: 40),
               ],
             ),
           ),
@@ -143,25 +155,27 @@ class SignupScreen extends StatelessWidget {
     );
   }
 
-  //TextField with icons
-  Widget _buildTextField(IconData icon, String hintText, {bool obscureText = false}) {
+  // Updated buildTextField with Eye Icon logic
+  Widget _buildTextField(IconData icon, String hintText, TextEditingController controller, {bool isPassword = false}) {
     return TextField(
-      obscureText: obscureText,
-      style: const TextStyle(color: Colors.white, fontSize: 16),
+      controller: controller,
+      obscureText: isPassword ? _obscurePassword : false,
+      style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
-        prefixIcon: Icon(icon, color: Colors.white, size: 28),
+        prefixIcon: Icon(icon, color: Colors.white, size: 24),
+        // Adding the Eye Icon only for password fields
+        suffixIcon: isPassword
+            ? IconButton(
+          icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility, color: Colors.white70),
+          onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+        )
+            : null,
         hintText: hintText,
-        hintStyle: const TextStyle(color: Colors.white70, fontSize: 16),
+        hintStyle: const TextStyle(color: Colors.white70),
         filled: true,
         fillColor: Colors.black.withOpacity(0.6),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
-          borderSide: const BorderSide(color: Colors.white30),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
-          borderSide: const BorderSide(color: AppColors.goldText),
-        ),
+        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(20), borderSide: const BorderSide(color: Colors.white30)),
+        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(30), borderSide: const BorderSide(color: AppColors.goldText)),
       ),
     );
   }

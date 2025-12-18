@@ -1,8 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../theme/app_colors.dart';
 import 'friend_profile_screen.dart';
 
-// Change from StatelessWidget to StatefulWidget
 class FriendsScreen extends StatefulWidget {
   final int friendsCount;
 
@@ -14,25 +15,10 @@ class FriendsScreen extends StatefulWidget {
 
 class _FriendsScreenState extends State<FriendsScreen> {
   final TextEditingController _searchController = TextEditingController();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final String _currentUserId = FirebaseAuth.instance.currentUser!.uid;
 
-  final List<Map<String, dynamic>> _allFriendsList = [
-    {'name': 'Alice', 'bio': 'Loves photography', 'threads': 5, 'capsules': 10, 'friends': 12},
-    {'name': 'Bob', 'bio': 'Coffee enthusiast', 'threads': 3, 'capsules': 8, 'friends': 9},
-    {'name': 'Charlie', 'bio': 'Travel junkie', 'threads': 7, 'capsules': 5, 'friends': 15},
-    {'name': 'Daisy', 'bio': 'Foodie and chef', 'threads': 2, 'capsules': 6, 'friends': 7},
-    {'name': 'Ethan', 'bio': 'Tech geek', 'threads': 9, 'capsules': 12, 'friends': 20},
-    {'name': 'Fiona', 'bio': 'Music lover', 'threads': 4, 'capsules': 7, 'friends': 8},
-    {'name': 'George', 'bio': 'Sports fanatic', 'threads': 6, 'capsules': 9, 'friends': 14},
-  ];
-
-  List<Map<String, dynamic>> _filteredFriendsList = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _filteredFriendsList = _allFriendsList;
-    _searchController.addListener(_filterFriends);
-  }
+  String _searchQuery = '';
 
   @override
   void dispose() {
@@ -40,17 +26,24 @@ class _FriendsScreenState extends State<FriendsScreen> {
     super.dispose();
   }
 
-  void _filterFriends() {
-    final query = _searchController.text.toLowerCase();
-    setState(() {
-      if (query.isEmpty) {
-        _filteredFriendsList = _allFriendsList;
-      } else {
-        _filteredFriendsList = _allFriendsList.where((friend) {
-          return friend['name']!.toLowerCase().contains(query);
-        }).toList();
+  // Logic to remove a friend from YOUR list
+  void _deleteFriend(String friendId, String friendName) async {
+    try {
+      await _firestore
+          .collection('users')
+          .doc(_currentUserId)
+          .collection('friends')
+          .doc(friendId)
+          .delete();
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('$friendName removed from friends')),
+        );
       }
-    });
+    } catch (e) {
+      debugPrint("Delete error: $e");
+    }
   }
 
   @override
@@ -61,7 +54,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
         backgroundColor: AppColors.sunsetBlue,
         iconTheme: const IconThemeData(color: AppColors.goldText),
         title: Text(
-          'Friends (${widget.friendsCount})',
+          'Friends', // We will let the stream count them
           style: const TextStyle(
             fontFamily: 'PlayfairDisplay',
             fontWeight: FontWeight.bold,
@@ -84,24 +77,17 @@ class _FriendsScreenState extends State<FriendsScreen> {
         ),
         child: Column(
           children: [
+            // Search Bar
             Padding(
               padding: const EdgeInsets.all(10.0),
               child: TextField(
                 controller: _searchController,
                 style: const TextStyle(color: AppColors.goldText),
+                onChanged: (value) => setState(() => _searchQuery = value.toLowerCase()),
                 decoration: InputDecoration(
                   hintText: 'Search friends...',
                   hintStyle: const TextStyle(color: AppColors.textHint),
                   prefixIcon: const Icon(Icons.search, color: AppColors.goldText),
-                  suffixIcon: _searchController.text.isNotEmpty
-                      ? IconButton(
-                    icon: const Icon(Icons.clear, color: AppColors.textHint),
-                    onPressed: () {
-                      _searchController.clear();
-                      _filterFriends();
-                    },
-                  )
-                      : null,
                   filled: true,
                   fillColor: Colors.black.withOpacity(0.6),
                   border: OutlineInputBorder(
@@ -109,90 +95,121 @@ class _FriendsScreenState extends State<FriendsScreen> {
                     borderSide: BorderSide.none,
                   ),
                 ),
-                onChanged: (_) => _filterFriends(),
               ),
             ),
+
             Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                itemCount: _filteredFriendsList.length,
-                itemBuilder: (context, index) {
-                  final friend = _filteredFriendsList[index];
-                  return Container(
-                    margin: const EdgeInsets.symmetric(vertical: 6),
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.6),
-                      borderRadius: BorderRadius.circular(15),
-                      border: Border.all(color: Colors.white24),
-                    ),
-                    child: Row(
-                      children: [
-                        // 🔴 Delete Icon (changed to red)
-                        IconButton(
-                          onPressed: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Delete ${friend['name']} tapped')),
-                            );
-                          },
-                          icon: const Icon(Icons.delete, color: Colors.redAccent),
-                        ),
+              // 🔗 This is the magic part: it only shows friends added to YOUR account
+              child: StreamBuilder<QuerySnapshot>(
+                stream: _firestore
+                    .collection('users')
+                    .doc(_currentUserId)
+                    .collection('friends')
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator(color: AppColors.goldText));
+                  }
 
-                        CircleAvatar(
-                          radius: 25,
-                          backgroundColor: Colors.green,
-                          child: Text(
-                            friend['name'][0].toUpperCase(), // first initial
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'PlayfairDisplay',
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
+                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                    return const Center(
+                      child: Text(
+                        "You haven't added any friends yet.",
+                        style: TextStyle(color: Colors.white70, fontFamily: 'PlayfairDisplay'),
+                      ),
+                    );
+                  }
 
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => FriendProfileScreen(
-                                    name: friend['name'],
-                                    bio: friend['bio'],
-                                    friendsCount: friend['friends'],
-                                  ),
-                                ),
-                              );
-                            },
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  friend['name'],
-                                  style: const TextStyle(
-                                    color: AppColors.goldText,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: 'PlayfairDisplay',
-                                  ),
-                                ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  friend['bio'],
-                                  style: const TextStyle(
-                                    color: AppColors.textHint,
-                                    fontSize: 13,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                  // Filtering logic for the search bar
+                  final friendsList = snapshot.data!.docs.where((doc) {
+                    final data = doc.data() as Map<String, dynamic>;
+                    final name = data['username']?.toString().toLowerCase() ?? '';
+                    return name.contains(_searchQuery);
+                  }).toList();
+
+                  return ListView.builder(
+                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                    itemCount: friendsList.length,
+                    itemBuilder: (context, index) {
+                      final doc = friendsList[index];
+                      final friend = doc.data() as Map<String, dynamic>;
+                      final String friendId = doc.id;
+                      final String name = friend['username'] ?? 'User';
+                      final String bio = friend['bio'] ?? 'Rekindl User';
+
+                      return Container(
+                        margin: const EdgeInsets.symmetric(vertical: 6),
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.6),
+                          borderRadius: BorderRadius.circular(15),
+                          border: Border.all(color: Colors.white24),
                         ),
-                      ],
-                    ),
+                        child: Row(
+                          children: [
+                            IconButton(
+                              onPressed: () => _deleteFriend(friendId, name),
+                              icon: const Icon(Icons.delete, color: Colors.redAccent),
+                            ),
+
+                            CircleAvatar(
+                              radius: 25,
+                              backgroundColor: Colors.green,
+                              child: Text(
+                                name.isNotEmpty ? name[0].toUpperCase() : '?',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'PlayfairDisplay',
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => FriendProfileScreen(
+                                        name: name,
+                                        bio: bio,
+                                        friendId: friendId, // 🟢 Passed the ID we got from doc.id
+                                        // threads: friend['threads'] ?? 0, // Optional: if you have this in the doc
+                                        // capsules: friend['capsules'] ?? 0, // Optional
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      name,
+                                      style: const TextStyle(
+                                        color: AppColors.goldText,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'PlayfairDisplay',
+                                      ),
+                                    ),
+                                    Text(
+                                      bio,
+                                      style: const TextStyle(
+                                        color: AppColors.textHint,
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
                   );
                 },
               ),

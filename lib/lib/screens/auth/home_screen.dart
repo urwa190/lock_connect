@@ -17,7 +17,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
-// ✅ Only include real screens — exclude Upload
   final List<Widget> _screens = [
     const HomeScreens(),         // 0
     const CapsuleHomeScreen(),   // 1
@@ -27,11 +26,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _onItemTapped(int index) {
     if (index == 2) {
-      // 🔹 Upload button tapped → call upload function/modal
+      //Upload button tapped → call upload function/modal
       showCreatePostMenu(context);
     } else {
       setState(() {
-        // 🔹 Adjust index mapping because Upload isn't in _screens
+        //Adjust index mapping because Upload isn't in _screens
         if (index > 2) {
           _selectedIndex = index - 1; // Shift after upload
         } else {
@@ -40,30 +39,6 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     }
   }
-
-
-  // // Screens for each tab (excluding Create because it shows modal)
-  // final List<Widget> _screens = [
-  //   const Center(child: Text('Home Content', style: TextStyle(color: Colors.white))),
-  //   const HomeScreens(),
-  //   const CapsuleHomeScreen(),
-  //   const ThreadsScreen(),
-  //   const ProfileScreen(),
-  // ];
-  //
-  // void _onItemTapped(int index) {
-  //   if (index == 3) {
-  //     // 👇 when Create button tapped, open Post Menu instead of switching screen
-  //     showCreatePostMenu(context);
-  //   } else {
-  //     setState(() {
-  //       // Adjusted index mapping (because Create is skipped)
-  //       _selectedIndex = index < 2 ? index : index - 1;
-  //     });
-  //   }
-  // }
-
-  // Screens for each tab (excluding Create because it shows modal)
 
 
   @override
@@ -84,39 +59,6 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         child: _screens[_selectedIndex],
       ),
-      // bottomNavigationBar: BottomNavigationBar(
-      //   currentIndex: _selectedIndex,
-      //   onTap: _onItemTapped,
-      //   backgroundColor: Colors.black.withOpacity(0.5),
-      //   type: BottomNavigationBarType.fixed,
-      //   selectedItemColor: AppColors.sunsetBlue,
-      //   unselectedItemColor: Colors.white70,
-      //   selectedFontSize: 13,
-      //   unselectedFontSize: 12,
-      //   showUnselectedLabels: true,
-      //   items: const [
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.home_filled),
-      //       label: 'Home',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.healing),
-      //       label: 'Capsules',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.add_box_rounded),
-      //       label: 'Create',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.forum),
-      //       label: 'Threads',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.person),
-      //       label: 'Profile',
-      //     ),
-      //   ],
-      // ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.black,
