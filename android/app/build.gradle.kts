@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace = "com.example.lock_connect" // Must match your google-services.json
-    compileSdk = 35
+    compileSdk = 36
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -23,7 +23,7 @@ android {
     defaultConfig {
         applicationId = "com.example.lock_connect"
         minSdk = 23 // Increased for modern media plugins
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
     }
