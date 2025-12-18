@@ -416,15 +416,12 @@ import 'create_capsule_screen.dart';
 import '../widgets/visual_capsule_card.dart';
 
 class CapsuleHomeScreen extends StatelessWidget {
-  CapsuleHomeScreen({super.key});
+  const CapsuleHomeScreen({
+    super.key,
+    required CapsuleService capsuleService,
+  }) : _capsuleService = capsuleService;
 
-  // Set your Cloudinary config here
-  final _capsuleService = CapsuleService(
-    uploader: CloudinaryUploader(
-      cloudName: 'YOUR_CLOUD_NAME',
-      uploadPreset: 'YOUR_UNSIGNED_PRESET',
-    ),
-  );
+  final CapsuleService _capsuleService;
 
   @override
   Widget build(BuildContext context) {
