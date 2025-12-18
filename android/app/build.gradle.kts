@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace = "com.example.lock_connect" // Must match your google-services.json
-    compileSdk = 35
+    compileSdk = 36
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -22,19 +22,31 @@ android {
 
     defaultConfig {
         applicationId = "com.example.lock_connect"
-        minSdk = 23 // Increased for modern media plugins
+        minSdk = flutter.minSdkVersion // Increased for modern media plugins
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
     }
 }
 
+//dependencies {
+//
+//    // Firebase Bill of Materials ensures all versions work together
+//    implementation(platform("com.google.firebase:firebase-bom:34.7.0"))
+//
+//    // Core Firebase features for Auth and Database
+//    implementation("com.google.firebase:firebase-analytics")
+//    implementation("com.google.firebase:firebase-auth-ktx")
+//    implementation("com.google.firebase:firebase-firestore-ktx")
+//}
+
+
 dependencies {
     // Firebase Bill of Materials ensures all versions work together
     implementation(platform("com.google.firebase:firebase-bom:34.7.0"))
 
-    // Core Firebase features for Auth and Database
+    // Core Firebase features (No -ktx suffix needed)
     implementation("com.google.firebase:firebase-analytics")
-    implementation("com.google.firebase:firebase-auth-ktx")
-    implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation("com.google.firebase:firebase-auth")      // Removed -ktx
+    implementation("com.google.firebase:firebase-firestore") // Removed -ktx
 }
