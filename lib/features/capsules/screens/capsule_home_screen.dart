@@ -3,7 +3,7 @@ import 'dart:math' as math;
 import 'package:lock_connect/core/constants/colors.dart'; // Contains kPrimaryAccentColor, kLockedCapsuleBase, etc.
 import 'package:lock_connect/core/constants/app_colors.dart'; // Contains AppColors.sunsetBlue, AppColors.goldText, etc.
 import '../widgets/visual_capsule_card.dart'; // The card for the list items
-import 'create_capsule_screen.dart'; // Screen 14 for the FAB navigation
+import '../../../lib/screens/auth/create_capsule_screen.dart'; // Screen 14 for the FAB navigation
 import 'capsule_detail_screen.dart'; // Screen 16 for unlocked capsule navigation
 
 // --- NEW IMPORT ---

@@ -351,7 +351,7 @@
 import 'package:flutter/material.dart';
 import 'package:lock_connect/core/constants/colors.dart';
 import 'package:lock_connect/core/constants/app_colors.dart';
-import 'add_collaborators_screen.dart'; // Import Screen 15
+import '../../../features/capsules/screens/add_collaborators_screen.dart'; // Import Screen 15
 
 
 // --- DARK MODE CONSTANTS ---

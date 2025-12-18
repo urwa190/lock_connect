@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../theme/app_colors.dart';
-import 'login_screen.dart';
-
 import 'package:flutter/material.dart';
-import '../../theme/app_colors.dart';
+
+import '../../../core/constants/app_colors.dart';
 import 'login_screen.dart';
 import 'signup_screen.dart';
 
