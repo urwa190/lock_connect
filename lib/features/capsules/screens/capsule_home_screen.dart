@@ -421,8 +421,8 @@ class CapsuleHomeScreen extends StatelessWidget {
   // Set your Cloudinary config here
   final _capsuleService = CapsuleService(
     uploader: CloudinaryUploader(
-      cloudName: 'YOUR_CLOUD_NAME',
-      uploadPreset: 'YOUR_UNSIGNED_PRESET',
+      cloudName: 'dl484kobd"',
+      uploadPreset: 'unsigned_preset',
     ),
   );
 
