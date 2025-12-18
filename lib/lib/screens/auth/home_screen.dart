@@ -19,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<Widget> _screens = [
     const HomeScreens(),         // 0
-    const CapsuleHomeScreen(),   // 1
+    CapsuleHomeScreen(),   // 1
     const ThreadsScreen(),       // 2 (will map from index 3)
     const ProfileScreen(),       // 3 (will map from index 4)
   ];
