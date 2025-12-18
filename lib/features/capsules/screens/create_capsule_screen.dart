@@ -639,8 +639,18 @@ class _CreateCapsuleScreenState extends State<CreateCapsuleScreen> {
 
   Future<void> _create() async {
     if (!_formKey.currentState!.validate()) return;
+
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('You must be signed in to create a capsule.')),
+      );
+      return;
+    }
+
     setState(() => _saving = true);
-    final uid = FirebaseAuth.instance.currentUser!.uid;
+    final uid = user.uid;
     final capsule = Capsule(
       id: '',
       title: _titleCtrl.text.trim(),
